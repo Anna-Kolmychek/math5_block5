@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Математика 5 класс</title>
+<link rel="stylesheet" href="shared-course.css">
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Интерактивный курс</div>
+  <div class="header-title">Математика<span>&nbsp;·&nbsp;5&nbsp;класс</span></div>
+  <div class="header-sub">11 блоков · 44 темы</div>
+  <div class="header-progress-label" id="progress-label">Загрузка...</div>
+  <div class="progress-track" style="margin-top:12px">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+</div>
+
+<div class="blocks" id="blocks-list"></div>
+
+<script>
+var BLOCKS = [
+  { id: 'block1',  num: '01', roman: 'I',    title: 'Числа вокруг нас',      nodes: ['Что такое натуральное число и нуль', 'Координатная прямая и шкалы', 'Сравнение и округление чисел', 'Таблицы и диаграммы'] },
+  { id: 'block2',  num: '02', roman: 'II',   title: 'Четыре действия',        nodes: ['Сложение и вычитание. Свойства', 'Выражение и уравнение. Задачи', 'Умножение и деление. Свойства', 'Порядок действий и скобки', 'Степень с натуральным показателем'] },
+  { id: 'block3',  num: '03', roman: 'III',  title: 'Делимость чисел',        nodes: ['Делители и кратные', 'Простые и составные числа', 'Признаки делимости', 'Деление с остатком'] },
+  { id: 'block4',  num: '04', roman: 'IV',   title: 'Фигуры на плоскости',    nodes: ['Точка, прямая, отрезок и его длина', 'Луч, виды углов и их измерение', 'Ломаная, многоугольники', 'Окружность и круг, шар и цилиндр'] },
+  { id: 'block5',  num: '05', roman: 'V',    title: 'Что такое дробь',        nodes: ['Доли и дроби. Смысл дроби', 'Правильные и неправильные дроби', 'Смешанные числа', 'Дроби на числовой прямой'] },
+  { id: 'block6',  num: '06', roman: 'VI',   title: 'Преобразование дробей',  nodes: ['Основное свойство дроби', 'Сокращение дробей', 'Приведение к общему знаменателю', 'Сравнение дробей'] },
+  { id: 'block7',  num: '07', roman: 'VII',  title: 'Действия с дробями',     nodes: ['Сложение и вычитание дробей', 'Умножение дробей', 'Деление дробей', 'Часть от целого и целое по части'] },
+  { id: 'block8',  num: '08', roman: 'VIII', title: 'Площадь и периметр',     nodes: ['Периметр многоугольника', 'Площадь прямоугольника. Формула', 'Единицы измерения площади', 'Площади сложных фигур'] },
+  { id: 'block9',  num: '09', roman: 'IX',   title: 'Десятичные дроби',       nodes: ['Десятичная запись. Связь с обыкновенной', 'Сравнение десятичных дробей', 'Округление десятичных дробей', 'Десятичные дроби на числовой прямой'] },
+  { id: 'block10', num: '10', roman: 'X',    title: 'Действия с десятичными', nodes: ['Сложение и вычитание десятичных', 'Умножение десятичных дробей', 'Деление десятичных дробей', 'Задачи с десятичными дробями'] },
+  { id: 'block11', num: '11', roman: 'XI',   title: 'Фигуры в пространстве',  nodes: ['Многогранники. Куб и параллелепипед', 'Развёртки. Поверхность тела', 'Объём. Формула объёма параллелепипеда', 'Единицы объёма'] }
+];
+
+function getProgress() {
+  var done = [];
+  var i;
+  for (i = 0; i < BLOCKS.length; i++) {
+    try {
+      var val = localStorage.getItem('math5_' + BLOCKS[i].id + '_progress');
+      if (val) {
+        var data = JSON.parse(val);
+        if (data && data.blockDone) { done.push(BLOCKS[i].id); }
+      }
+    } catch (e) {}
+  }
+
+  return done;
+}
+
+function render() {
+  var doneIds = getProgress();
+  var doneSet = {};
+  var i, j;
+  for (i = 0; i < doneIds.length; i++) { doneSet[doneIds[i]] = true; }
+
+  var doneCount = doneIds.length;
+  var total     = BLOCKS.length;
+
+  var labelEl = document.getElementById('progress-label');
+  var fillEl = document.getElementById('progress-fill');
+  if (doneCount === 0) {
+    labelEl.textContent = 'Ни одного блока ещё не пройдено';
+  } else if (doneCount === total) {
+    labelEl.textContent = 'Все ' + total + ' блоков пройдены';
+  } else {
+    labelEl.textContent = 'Пройдено ' + doneCount + ' из ' + total + ' блоков';
+  }
+  fillEl.style.width = Math.round((doneCount / total) * 100) + '%';
+
+  var container = document.getElementById('blocks-list');
+  var html = '';
+
+  for (i = 0; i < BLOCKS.length; i++) {
+    var b        = BLOCKS[i];
+    var isDone   = !!doneSet[b.id];
+    var isActive = !isDone && (i === 0 || !!doneSet[BLOCKS[i - 1].id]);
+
+    var inactiveIds = ['block1','block2','block3','block4','block6','block7','block8','block9','block10','block11'];
+    var isInactive = inactiveIds.indexOf(b.id) !== -1;
+    var cardClass = 'block-card'+ (isDone ? ' is-done' : (isActive ? ' is-active' : '')) + (isInactive ? ' is-inactive' : '');
+
+    var metaHtml = '<div class="card-meta"><div class="card-badge">Блок ' + b.roman + '</div>';
+    if (isDone) { metaHtml += '<div class="card-check">&#10003; Пройден</div>'; }
+    metaHtml += '</div>';
+
+    var nodesHtml = '<div class="nodes-line">' + b.nodes.join('<span class="sep"> · </span>') + '</div>';
+
+
+
+    html += '<a class="' + cardClass + '" href="' + b.id + '/index.html">';
+    html += '<div class="card-inner">';
+    html += '<div class="card-num-col"><div class="card-num">' + b.num + '</div></div>';
+    html += '<div class="card-content">';
+    html += metaHtml;
+    html += '<div class="card-title">' + b.title + '</div>';
+    html += nodesHtml;
+    html += '<div class="card-footer"><div class="node-count">' + b.nodes.length + ' ' + (b.nodes.length === 1 ? 'тема' : b.nodes.length < 5 ? 'темы' : 'тем') + '</div>';
+    html += '<div class="card-arrow">' + (isDone ? '&#10003;' : '&rarr;') + '</div>';
+    html += '</div></div>';
+    html += '</div></a>';
+  }
+
+  container.innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>

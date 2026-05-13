@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Узел 1 · Доли и дроби</title>
+  <link rel="stylesheet" href="../shared.css">
+  <style>
+
+    body { background: #F5F0E8; min-height: 100vh; color: #1a1a1a; }
+
+    .col {
+      width: 100%; max-width: 960px; margin: 0 auto;
+      padding-left: 16px; padding-right: 16px;
+    }
+    @media (min-width: 600px) {
+      .col { max-width: none; width: min(100vw - 32px, 640px); }
+    }
+    @media (min-width: 1024px) {
+      .col { width: 960px; }
+    }
+
+    /* Топбар */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(245,240,232,0.97);
+      border-bottom: 1.5px solid #E0D8CC;
+      padding: 10px 16px;
+    }
+    .topbar-inner {
+      width: 100%; max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; gap: 10px;
+    }
+    @media (min-width: 600px) {
+      .topbar-inner { max-width: none; width: min(100vw - 32px, 640px); }
+    }
+    @media (min-width: 1024px) {
+      .topbar-inner { width: 960px; }
+    }
+    
+    
+    
+    
+
+    /* Секции */
+    .page { padding: 20px 0 60px; }
+    .sec { margin-bottom: 28px; }
+    .sec-title {
+      display: flex; align-items: center; gap: 7px;
+      margin-bottom: 12px;
+    }
+    .sec-pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 14px 6px 8px; border-radius: 50px; width: 100%;
+    }
+    .sec-pill-icon {
+      width: 34px; height: 34px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .sec-pill-text {
+      font-family: var(--font-main); font-size: 15px; font-weight: 800;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    /* Изучаем */
+    .sp-learn { background: #EEEEFF; }
+    .sp-learn .sec-pill-icon { background: #D4D4F8; }
+    .sp-learn .sec-pill-text { color: #0D0C59; }
+    /* Тренируемся */
+    .sp-train { background: #FEFCE8; }
+    .sp-train .sec-pill-icon { background: #FEF08A; }
+    .sp-train .sec-pill-text { color: #713F12; }
+    /* Ошибки */
+    .sp-err { background: #FFF1EC; }
+    .sp-err .sec-pill-icon { background: #FFD9CC; }
+    .sp-err .sec-pill-text { color: #7C2D12; }
+
+    /* Карточка */
+    .card {
+      background: #fff;
+      border: 1.5px solid #E0D8CC;
+      border-radius: 16px; overflow: hidden;
+    }
+
+    /* Hook */
+    .hook-card {
+      background: #FFF8ED; border: 1.5px solid rgba(196,124,26,0.3);
+      border-radius: 16px; overflow: hidden;
+    }
+    .hook-svg-wrap {
+      width: 100%; background: #1A1008;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0; overflow: hidden;
+    }
+    .hook-svg-wrap svg { display: block; width: 100%; height: auto; }
+    .hook-text-wrap { padding: 16px 18px 18px; }
+    
+    
+
+    /* Симуляция */
+    .sim-top { background: #FFFBF5; padding: 20px 16px 16px; border-bottom: 1.5px solid #E0D8CC; }
+    .choc-wrap { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; }
+    .choc-grid-img { display: flex; flex-wrap: nowrap; gap: 0; align-items: stretch; justify-content: center; overflow-x: auto; max-width: 100%; padding: 4px 0; border-radius: 8px; overflow: hidden; }
+    .choc-cell-svg { flex-shrink: 0; transition: opacity 0.25s; display: block; }
+    .choc-cell-svg.on  { opacity: 1; }
+    .choc-cell-svg.off { opacity: 0.15; }
+    @media (max-width: 599px) {
+      .choc-cell-svg svg { width: 30px !important; height: 39px !important; }
+    }
+
+    .frac-disp { display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 72px; }
+    
+    .frac-l { width: 52px; height: 3px; background: #C47C1A; border-radius: 2px; }
+    
+    .frac-word { font-size: 15px; color: #888; text-align: center; margin-top: 4px; min-height: 18px; }
+
+    .sliders { padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
+    .slider-row { display: flex; flex-direction: column; gap: 6px; }
+    .slider-lbl { display: flex; justify-content: space-between; align-items: center; }
+    
+    
+    input[type=range] { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; background: #E0D8CC; outline: none; cursor: pointer; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: #C47C1A; box-shadow: 0 2px 8px rgba(196,124,26,0.4); cursor: pointer; }
+
+    .presets { padding: 0 16px 14px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .preset-btn {
+      background: #FFF3DE; border: 1.5px solid rgba(196,124,26,0.35);
+      border-radius: 50px; padding: 6px 16px;
+      font-family: var(--font-main); font-size: 15px; font-weight: 800; color: #A86010;
+      cursor: pointer; transition: transform 0.12s, background 0.15s; -webkit-tap-highlight-color: transparent;
+    }
+    .preset-btn:active { transform: scale(0.92); background: #FFE8B8; }
+
+    /* Чек-вопрос */
+    .check-wrap { padding: 14px 16px; border-top: 1.5px solid #E0D8CC; }
+    
+    .check-opts { display: flex; flex-direction: column; gap: 8px; }
+    
+    
+    .check-opt.correct { background: #ECFDF5; border-color: #22C55E; color: #166534; pointer-events: none; }
+    .check-opt.wrong   { background: #FEF2F2; border-color: #F87171; color: #991B1B; }
+    .check-opt.dis     { pointer-events: none; opacity: 0.4; }
+    .check-fb { margin-top: 10px; padding: 10px 14px; border-radius: 10px; font-size: 15px; line-height: 1.5; font-weight: 600; display: none; }
+    .check-fb.ok  { background: #ECFDF5; color: #166534; display: block; }
+    .check-fb.err { background: #FEF2F2; color: #991B1B; display: block; }
+
+    /* Объяснение */
+    .expl-block { padding: 14px 16px; border-bottom: 1.5px solid #E0D8CC; }
+    .expl-block:last-child { border-bottom: none; }
+    
+    
+    .expl-t strong { font-weight: 800; color: #1a1a1a; }
+    .expl-alert { background: #FFFBEB; border-left: 3px solid #F59E0B; border-radius: 0 10px 10px 0; padding: 12px 14px; line-height: 1.6; color: #78350F; }
+    .expl-alert strong { color: #92400E; }
+
+    /* Опорный конспект */
+    
+    
+    
+    .cs-toggle.open .cs-toggle-icon { transform: rotate(180deg); }
+    .cs-body { display: none; margin-top: 8px; }
+    .cs-body.open { display: block; }
+    .cs-block { padding: 14px 16px; border-bottom: 1.5px solid #E0D8CC; }
+    .cs-block:last-child { border-bottom: none; }
+    
+    
+    .cs-text strong { color: #C47C1A; font-weight: 800; }
+    .cs-list { display: flex; flex-direction: column; gap: 7px; }
+    
+    
+    .cs-confusion { display: flex; flex-direction: column; gap: 8px; }
+    .cs-conf-row { background: #F5F0E8; border-radius: 10px; padding: 10px 12px; }
+    
+    
+
+    /* Глоссарий */
+    .gloss-list { display: flex; flex-direction: column; gap: 6px; }
+    .gloss-item { background: #fff; border: 1.5px solid #E0D8CC; border-radius: 12px; overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .gloss-head { padding: 13px 16px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    
+    
+    .gloss-item.open .gloss-arrow { transform: rotate(180deg); }
+    
+    .gloss-item.open .gloss-body { display: block; }
+    .gloss-body em { font-style: normal; font-weight: 700; color: #C47C1A; }
+
+    /* Match */
+    .match-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: stretch; margin-bottom: 10px; }
+    .match-col  { display: flex; flex-direction: column; gap: 6px; }
+    
+    
+    .match-item.sel  { border-color: #C47C1A; background: #FFF3DE; }
+    .match-item.done { border-color: #22C55E; background: #ECFDF5; color: #166534; pointer-events: none; }
+    .match-item.bad  { border-color: #F87171; background: #FEF2F2; animation: shake 0.35s; }
+    .match-item.dis  { opacity: 0.32; pointer-events: none; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+    
+    .match-score span { color: #16A34A; }
+    
+
+    /* Чтение */
+    
+    .read-papyrus { width: 100%; aspect-ratio: 2/1; object-fit: cover; object-position: center 30%; display: block; }
+    
+    .read-text p { margin-bottom: 12px; }
+    .read-text p:last-child { margin-bottom: 0; }
+    .read-qs { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 16px; }
+    
+    .read-opts { display: flex; flex-direction: column; gap: 6px; }
+    
+    .read-opt.correct { background: #ECFDF5; border-color: #22C55E; color: #166534; pointer-events: none; }
+    .read-opt.wrong   { background: #FEF2F2; border-color: #F87171; color: #991B1B; pointer-events: none; }
+    .read-opt.dis     { pointer-events: none; opacity: 0.4; }
+
+    /* Misconceptions: две карточки рядом + общая панель */
+    .misc-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;
+    }
+    .misc-card {
+      background: #fff; border: 1.5px solid #E0D8CC;
+      border-radius: 14px; overflow: hidden;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .misc-card.active {
+      border-color: #C47C1A;
+      box-shadow: 0 2px 14px rgba(196,124,26,0.18);
+    }
+    .misc-card-img {
+      width: 100%; aspect-ratio: 1;
+      object-fit: contain; display: block;
+      background: #F5F0E8; padding: 8px;
+    }
+    
+    .misc-panel {
+      display: none;
+      background: #fff; border: 1.5px solid #E0D8CC;
+      border-radius: 14px; overflow: hidden;
+    }
+    .misc-panel.open { display: block; }
+    .misc-panel-head {
+      background: #FEF2F2; padding: 14px 16px;
+      border-bottom: 1.5px solid #FECACA;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .misc-panel-head-icon { flex-shrink: 0; margin-top: 2px; }
+    
+    .misc-body  { padding: 14px 16px; }
+    
+    
+    
+
+    /* Запомни */
+    .remember-list { display: flex; flex-direction: column; gap: 7px; }
+    .remember-item { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; background: #fff; border: 1.5px solid #E0D8CC; border-radius: 10px; }
+    .remember-dot  { width: 7px; height: 7px; border-radius: 50%; background: #C47C1A; flex-shrink: 0; margin-top: 0; align-self: center; }
+    
+    .remember-text strong { color: #1a1a1a; font-weight: 800; }
+
+    /* Проверь себя */
+    .selfcheck-list { display: flex; flex-direction: column; gap: 7px; }
+    
+    .selfcheck-num  { font-weight: 800; color: #AAA098; margin-right: 6px; }
+
+    /* Квиз */
+    .quiz-prog { display: flex; gap: 6px; margin-bottom: 14px; }
+    .quiz-dot  { flex: 1; height: 4px; border-radius: 2px; background: #E0D8CC; transition: background 0.3s; }
+    .quiz-dot.done    { background: #C47C1A; }
+    .quiz-dot.current { background: rgba(196,124,26,0.38); }
+    .quiz-qw  { padding: 16px 16px 10px; }
+    
+    
+    .quiz-opts { padding: 0 16px 14px; display: flex; flex-direction: column; gap: 8px; }
+    
+    
+    .quiz-opt.correct { background: #ECFDF5; border-color: #22C55E; color: #166534; pointer-events: none; }
+    .quiz-opt.wrong   { background: #FEF2F2; border-color: #F87171; color: #991B1B; pointer-events: none; }
+    .quiz-opt.dis     { pointer-events: none; opacity: 0.32; }
+    
+    .quiz-explain.show { display: block; }
+    .quiz-explain.ok  { background: #ECFDF5; color: #166534; }
+    .quiz-explain.err { background: #FEF2F2; color: #991B1B; }
+    
+    
+    .quiz-dot.correct { background: #22C55E; }
+    .quiz-dot.wrong   { background: #F87171; }
+
+    /* DYK */
+    .dyk-list  { display: flex; flex-direction: column; gap: 0; }
+    .dyk-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .dyk-card  {
+      background: #fff; border: 1.5px solid #E0D8CC;
+      border-radius: 14px; overflow: hidden;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .dyk-card.active {
+      border-color: #C47C1A;
+      box-shadow: 0 2px 14px rgba(196,124,26,0.18);
+    }
+    .dyk-card-img {
+      width: 100%; aspect-ratio: 3/2;
+      background: #F5F0E8;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .dyk-card-body { padding: 10px 12px 12px; }
+    
+    .dyk-teaser{ font-size: 15px; color: #888; font-style: italic; line-height: 1.45; }
+    /* Панель с текстом */
+    .dyk-panel { display: none; background: #fff; border: 1.5px solid #C47C1A; border-radius: 14px; overflow: hidden; margin-bottom: 10px; }
+    .dyk-panel.open { display: block; }
+    .dyk-panel-head { background: #FFF8ED; padding: 14px 16px; border-bottom: 1.5px solid rgba(196,124,26,0.2); }
+    .dyk-panel-img { width: 100%; aspect-ratio: 3/2; background: #EDE6D8; border: 2px dashed #C4B89A; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; margin-bottom: 0; }
+    .dyk-panel-img-id { font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #AAA098; }
+    .dyk-panel-img-desc { font-size: 15px; font-weight: 600; color: #8C7A60; line-height: 1.5; max-width: 280px; text-align: center; }
+
+    /* Заглушки иллюстраций */
+    .img-placeholder {
+      width: 100%; background: #EDE6D8;
+      border: 2px dashed #C4B89A;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px; color: #8C7A60;
+      font-family: var(--font-main);
+      text-align: center; padding: 20px 16px;
+      box-sizing: border-box;
+    }
+    
+    
+    
+    /* пропорции */
+    .img-ph-16-7  { aspect-ratio: 16/7; }
+    .img-ph-1-1   { aspect-ratio: 1/1; }
+    .img-ph-3-2   { aspect-ratio: 3/2; }
+    .img-ph-16-6  { aspect-ratio: 16/6; }
+
+    /* Кнопка «На плакат» внизу */
+    .bottom-back {
+      padding: 0 16px 48px;
+      width: 100%; max-width: 960px; margin: 0 auto;
+    }
+    @media (min-width: 600px) {
+      .bottom-back { max-width: none; width: min(100vw - 32px, 640px); }
+    }
+    @media (min-width: 1024px) {
+      .bottom-back { width: 960px; }
+    }
+    
+    
+
+    /* Экран завершения */
+    .finish-ov {
+      position: fixed; inset: 0; background: rgba(245,240,232,0.97);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.4s;
+    }
+    .finish-ov.show { opacity: 1; pointer-events: all; }
+    .finish-card {
+      background: #fff; border: 1.5px solid #E0D8CC;
+      border-radius: 24px; padding: 36px 28px; text-align: center; max-width: 320px; width: 90%;
+      transform: scale(0.75); transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .finish-ov.show .finish-card { transform: scale(1); }
+    
+    
+    
+    .finish-score strong { color: #16A34A; font-weight: 800; }
+    .finish-btns  { display: flex; flex-direction: column; gap: 8px; }
+    
+    
+    .finish-btn-pri { background: #C47C1A; color: #fff; }
+    .finish-btn-sec { background: #F5F0E8; color: #888; border: 1.5px solid #E0D8CC; }
+
+    /* Масштабирование */
+    @media (min-width: 600px) {
+      .frac-word    { font-size: clamp(14px, 1.7vw, 16px); }
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      .dyk-teaser   { font-size: clamp(14px, 1.7vw, 16px); }
+      .dyk-text     { font-size: clamp(16px, 2vw, 19px); }
+    }
+
+    /* Инлайн-дробь */
+    .frac {
+      display: inline-grid;
+      grid-template-rows: 1fr auto 1fr;
+      align-items: center;
+      text-align: center;
+      vertical-align: middle;
+      margin: 0 2px;
+      line-height: 1;
+    }
+    .frac-n, .frac-d { font-size: 1em; line-height: 1.15; }
+    .frac-bar { border-top: 1.5px solid currentColor; width: 100%; min-width: 0.7em; }
+
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-badge">1</div>
+    <div class="topbar-title">Доли и дроби</div>
+    <a href="index.html" class="topbar-back">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      На плакат
+    </a>
+  </div>
+</div>
+
+<div class="page">
+<div class="col">
+
+  <!-- 1. HOOK -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="#0D0C59"><path d="M11.95 18q.525 0 .888-.363t.362-.887t-.362-.888t-.888-.362t-.887.363t-.363.887t.363.888t.887.362m.05 4q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m.1-12.3q.625 0 1.088.4t.462 1q0 .55-.337.975t-.763.8q-.575.5-1.012 1.1t-.438 1.35q0 .35.263.588t.612.237q.375 0 .638-.25t.337-.625q.1-.525.45-.937t.75-.788q.575-.55.988-1.2t.412-1.45q0-1.275-1.037-2.087T12.1 6q-.95 0-1.812.4T8.975 7.625q-.175.3-.112.638t.337.512q.35.2.725.125t.625-.425q.275-.375.688-.575t.862-.2"/></svg></div><span class="sec-pill-text">Подумай перед началом</span></div></div>
+    <div class="hook-card">
+      <img src="node1_img1.png" alt="Египтянин с папирусом у пирамиды" style="width:100%;aspect-ratio:16/7;object-fit:cover;display:block;border-radius:12px 12px 0 0;">
+      <div class="hook-text-wrap">
+        <div class="hook-label">Вопрос</div>
+        <div class="hook-text">Египтяне 4000 лет назад умели строить пирамиды высотой 140 метров — и при этом не знали, как записать «две пятых». Чтобы записать <span class="frac"><span class="frac-n">2</span><span class="frac-bar"></span><span class="frac-d">5</span></span>, им приходилось писать <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">3</span></span>&#160;+&#160;<span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">15</span></span>. Как и зачем появилась запись, которой ты пользуешься сегодня?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. СИМУЛЯЦИЯ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 512 512" fill="#0D0C59"><path fill-rule="evenodd" d="M421.935 90.066c2.286 2.287 5.356 7.973 4.013 21.398c-1.323 13.221-6.731 30.687-16.845 51.505a306 306 0 0 1-3.77 7.492v42.31c39.823-61.993 54.037-115.44 31.687-137.79c-22.529-22.528-76.652-7.907-139.277 32.646l20.879 12.054c10.535-6.46 20.717-12.073 30.411-16.783c20.817-10.114 38.283-15.522 51.504-16.845c13.425-1.343 19.112 1.727 21.398 4.013M405.333 341.54v-42.31c39.823 61.993 54.037 115.44 31.687 137.79c-22.536 22.536-76.689 7.897-139.341-32.687l20.877-12.053c10.559 6.477 20.763 12.104 30.477 16.823c20.817 10.114 38.283 15.522 51.505 16.845c13.424 1.343 19.111-1.727 21.397-4.013c2.287-2.287 5.357-7.973 4.013-21.398c-1.322-13.221-6.73-30.687-16.845-51.505a306 306 0 0 0-3.77-7.492m-211.888 50.74l20.876 12.053c-62.651 40.584-116.804 55.223-139.34 32.687c-22.35-22.35-8.136-75.795 31.686-137.788v42.31a309 309 0 0 0-3.769 7.49c-10.114 20.818-15.522 38.284-16.845 51.505c-1.343 13.425 1.727 19.111 4.013 21.398c2.287 2.286 7.973 5.356 21.398 4.013c13.221-1.323 30.687-6.731 51.505-16.845c9.713-4.719 19.917-10.346 30.476-16.823M74.981 74.981c-22.35 22.35-8.136 75.795 31.686 137.788v-42.311a308 308 0 0 1-3.769-7.489c-10.114-20.818-15.522-38.284-16.845-51.505c-1.343-13.425 1.727-19.111 4.013-21.398c2.287-2.286 7.973-5.356 21.398-4.013c13.221 1.323 30.687 6.73 51.505 16.845c9.693 4.709 19.874 10.322 30.41 16.782l20.878-12.054C151.633 67.074 97.51 52.453 74.981 74.981M256 108.16l128 73.901v147.801l-128 73.901l-128-73.901V182.06zm85.333 123.132v73.937l-64 36.95v-73.937zm-106.666 36.95v73.937l-64-36.95v-73.937zM256 231.291l-63.969-36.933L256 157.426l63.969 36.932z" clip-rule="evenodd"/></svg></div><span class="sec-pill-text">Симуляция — подвигай ползунки</span></div></div>
+    <div class="card">
+      <div class="sim-top">
+        <div class="choc-wrap">
+          <div id="chocGrid" class="choc-grid-img"></div>
+          <div class="frac-disp">
+            <div class="sim-n" id="fN">1</div>
+            <div class="frac-l"></div>
+            <div class="sim-d" id="fD">4</div>
+            <div class="frac-word" id="fW">одна четвёртая</div>
+          </div>
+        </div>
+      </div>
+      <div class="sliders">
+        <div class="slider-row">
+          <div class="slider-lbl">
+            <span class="slider-lbl-t">Делим на частей</span>
+            <span class="slider-val" id="dV">4</span>
+          </div>
+          <input type="range" id="denS" min="2" max="10" value="4" step="1">
+        </div>
+        <div class="slider-row">
+          <div class="slider-lbl">
+            <span class="slider-lbl-t">Берём частей</span>
+            <span class="slider-val" id="nV">1</span>
+          </div>
+          <input type="range" id="numS" min="1" max="4" value="1" step="1">
+        </div>
+      </div>
+      <div class="presets">
+        <button class="preset-btn" id="pBtn1" onclick="setP(2,1)"></button>
+        <button class="preset-btn" id="pBtn2" onclick="setP(4,1)"></button>
+        <button class="preset-btn" id="pBtn3" onclick="setP(3,2)"></button>
+        <button class="preset-btn" id="pBtn4" onclick="setP(4,3)"></button>
+      </div>
+      <div class="check-wrap">
+        <div class="check-q">Шоколадку разделили на 6 частей и съели 4. Как записать съеденную часть дробью?</div>
+        <div class="check-opts" id="checkOpts"></div>
+        <div class="check-fb" id="checkFb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. ОБЪЯСНЕНИЕ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="#0D0C59"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74c0-3.86-3.14-7-7-7m2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A5 5 0 0 1 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1"/></svg></div><span class="sec-pill-text">Главная идея</span></div></div>
+    <div class="card">
+      <div class="expl-block">
+        <div class="expl-lbl">Как это работает</div>
+        <div class="expl-t">Дробь записывается как <strong>числитель / знаменатель</strong>. Знаменатель показывает <strong>на сколько равных частей</strong> поделили целое. Числитель — <strong>сколько таких частей взяли</strong>.</div>
+      </div>
+      <div class="expl-block">
+        <div class="expl-lbl">Важный эффект</div>
+        <div class="expl-t">Чем больше знаменатель — тем <strong>меньше каждая часть</strong>. Поделить пирог на 10 частей значит каждый кусок меньше, чем если делить на 2.</div>
+      </div>
+      <div class="expl-block">
+        <div class="expl-lbl">Не путай</div>
+        <div class="expl-alert">Большой знаменатель — <strong>не значит большая дробь</strong>. Наоборот: <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">10</span></span> намного меньше <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">2</span></span>, хотя 10&#160;&gt;&#160;2.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. ОПОРНЫЙ КОНСПЕКТ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="#0D0C59"><path d="M5 3c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 2h14v14H5zm2 2v2h10V7zm0 4v2h10v-2zm0 4v2h7v-2z"/></svg></div><span class="sec-pill-text">Опорный конспект</span></div></div>
+    <button class="cs-toggle" id="csToggle" onclick="toggleCS()">
+      <span>Открыть — читай перед контрольной</span>
+      <span class="cs-toggle-icon">&#9662;</span>
+    </button>
+    <div class="cs-body card" id="csBody">
+      <div class="cs-block">
+        <div class="cs-lbl">Что это</div>
+        <div class="cs-text">Дробь — запись вида <strong><span class="frac"><span class="frac-n">a</span><span class="frac-bar"></span><span class="frac-d">b</span></span></strong>, где b — на сколько равных частей поделили целое, a — сколько таких частей взяли.</div>
+      </div>
+      <div class="cs-block">
+        <div class="cs-lbl">Главные факты</div>
+        <div class="cs-list">
+          <div class="cs-item">Числитель (верхнее число) — сколько частей взяли</div>
+          <div class="cs-item">Знаменатель (нижнее число) — на сколько частей делили</div>
+          <div class="cs-item">Чем больше знаменатель — тем меньше каждая часть: <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">10</span></span> &lt; <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">2</span></span></div>
+          <div class="cs-item">Современная запись дроби появилась в Индии около 1500 лет назад</div>
+          <div class="cs-item">Дробная черта означает деление: <span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">8</span></span> = 3 разделить на 8</div>
+        </div>
+      </div>
+      <div class="cs-block">
+        <div class="cs-lbl">Не путать</div>
+        <div class="cs-confusion">
+          <div class="cs-conf-row">
+            <div class="cs-conf-wrong">Большой знаменатель = большая дробь — неверно</div>
+            <div class="cs-conf-right">Большой знаменатель = маленькие части. <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">8</span></span> &lt; <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">2</span></span>, хотя 8 &gt; 2</div>
+          </div>
+          <div class="cs-conf-row">
+            <div class="cs-conf-wrong">Числитель и знаменатель можно поменять местами — неверно</div>
+            <div class="cs-conf-right">Числитель всегда сверху (сколько взяли), знаменатель всегда снизу</div>
+          </div>
+        </div>
+      </div>
+      <div class="cs-block">
+        <div class="cs-lbl">Приём для запоминания</div>
+        <div class="cs-hint">ЗНАменатель — ЗНАй, на сколько делили (стоит снизу, как основание). Числитель — ЧИСЛо взятых частей (стоит сверху).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. ГЛОССАРИЙ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 256 256" fill="#0D0C59"><path d="M85.43 53.45a6 6 0 0 0-10.86 0l-64 136a6 6 0 1 0 10.86 5.11L38.63 158h82.74l17.2 36.55a6 6 0 1 0 10.86-5.11ZM44.28 146L80 70.09L115.72 146ZM200 98c-12.21 0-21.71 3.28-28.23 9.74a6 6 0 0 0 8.46 8.52c4.18-4.15 10.84-6.26 19.77-6.26c14.34 0 26 9.87 26 22v7.24a40.36 40.36 0 0 0-26-9.24c-20.95 0-38 15.25-38 34s17.05 34 38 34a40.36 40.36 0 0 0 26-9.24V192a6 6 0 0 0 12 0v-60c0-18.75-17-34-38-34m0 88c-14.34 0-26-9.87-26-22s11.66-22 26-22s26 9.87 26 22s-11.66 22-26 22"/></svg></div><span class="sec-pill-text">Глоссарий — тапни чтобы открыть</span></div></div>
+    <div class="gloss-list" id="glossList"></div>
+  </div>
+
+  <!-- 6. ТРЕНАЖЁР -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-train"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#854D0E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="7" height="7" rx="1"/><rect x="14" y="4" width="7" height="7" rx="1"/><rect x="3" y="15" width="7" height="7" rx="1"/><rect x="14" y="15" width="7" height="7" rx="1"/><path d="M10 7.5h4M10 18.5h4"/></svg></div><span class="sec-pill-text">Тренажёр — установи соответствие</span></div></div>
+    <div class="card" style="padding:16px;">
+      <div class="match-cols">
+        <div class="match-col" id="mL"></div>
+        <div class="match-col" id="mR"></div>
+      </div>
+      <div class="match-score">Совпадений: <span id="mCnt">0</span> / 6</div>
+      <button class="match-reset" id="mReset" onclick="initMatch()">Ещё раз</button>
+    </div>
+  </div>
+
+  <!-- 7. ЧТЕНИЕ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0D0C59" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="M11 16.5s1.5.5 2.25 2.5c0 0 3.573-5.833 6.75-7"/><path d="M4 5h14M4 10h11M4 15h4"/></svg></div><span class="sec-pill-text">Читай и отвечай</span></div></div>
+    <div class="card">
+      <div class="read-tag">История математики</div>
+      <img src="node1_img2.png" alt="Лента времени: египтянин, индийский математик, арабский учёный" style="width:100%;aspect-ratio:16/6;object-fit:cover;display:block;border-radius:0;">
+      <div class="read-text">
+        <p>Дроби появились тысячи лет назад — когда людям понадобилось делить поровну то, что нельзя разрезать на целые части. Представь: охотники добыли одного оленя, а их трое. Как разделить честно? Именно тогда и возникла идея доли.</p>
+        <p>Древние египтяне записывали дроби иначе. Они использовали только дроби с числителем 1: <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">2</span></span>, <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">3</span></span>, <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">7</span></span>. Чтобы записать <span class="frac"><span class="frac-n">2</span><span class="frac-bar"></span><span class="frac-d">5</span></span>, им приходилось писать <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">3</span></span> + <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">15</span></span>. Неудобно, но других способов они не знали.</p>
+        <p>Современная запись дроби с числителем и знаменателем появилась в Индии примерно 1500 лет назад. Арабские математики добавили дробную черту. Когда ты пишешь <span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span> — ты используешь изобретение, которому полтора тысячелетия.</p>
+      </div>
+      <div class="read-qs" id="readQs"></div>
+    </div>
+  </div>
+
+  <!-- 8. MISCONCEPTIONS -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-err"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9A3412" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 21h20L12 3z"/><path d="M12 10v4M12 17v.5"/></svg></div><span class="sec-pill-text">Так часто думают — но это неверно</span></div></div>
+    <div class="misc-grid" id="miscGrid"></div>
+    <div class="misc-panel" id="miscPanel"></div>
+  </div>
+
+  <!-- 9. ЗАПОМНИ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-train"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#854D0E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18l7-4 7 4V3H5z"/></svg></div><span class="sec-pill-text">Запомни</span></div></div>
+    <div class="remember-list" id="rememberList"></div>
+  </div>
+
+  <!-- 10. ПРОВЕРЬ СЕБЯ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-train"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#854D0E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div><span class="sec-pill-text">Проверь себя</span></div></div>
+    <div class="selfcheck-list" id="selfcheckList"></div>
+  </div>
+
+  <!-- 11. ФИНАЛЬНЫЙ КВИЗ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-train"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#854D0E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3L4 14h7l-1 7 9-11h-7l1-7z"/></svg></div><span class="sec-pill-text">Финальный квиз</span></div></div>
+    <div class="quiz-prog" id="qProg"></div>
+    <div class="card" id="qCard"></div>
+  </div>
+
+  <!-- 12. DYK -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 56 56" fill="#0D0C59"><path d="M28 51.906c13.055 0 23.906-10.828 23.906-23.906c0-13.055-10.875-23.906-23.93-23.906C14.899 4.094 4.095 14.945 4.095 28c0 13.078 10.828 23.906 23.906 23.906m0-3.984C16.937 47.922 8.1 39.062 8.1 28c0-11.04 8.813-19.922 19.876-19.922c11.039 0 19.921 8.883 19.945 19.922c.023 11.063-8.883 19.922-19.922 19.922m-.023-15.68c1.124 0 1.757-.633 1.78-1.851l.352-12.375c.024-1.196-.914-2.086-2.156-2.086c-1.266 0-2.156.867-2.133 2.062l.305 12.399c.023 1.195.68 1.851 1.852 1.851m0 7.617c1.335 0 2.53-1.078 2.53-2.437c0-1.383-1.171-2.438-2.53-2.438c-1.383 0-2.532 1.078-2.532 2.438c0 1.336 1.172 2.437 2.532 2.437"/></svg></div><span class="sec-pill-text">Знаешь ли ты что...</span></div></div>
+    <div class="dyk-grid" id="dykGrid"></div>
+    <div class="dyk-panel" id="dykPanel"></div>
+  </div>
+
+</div>
+</div>
+
+<div class="bottom-back">
+  <a href="index.html" class="back-to-poster">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    На плакат
+  </a>
+</div>
+
+<div class="finish-ov" id="finOv">
+  <div class="finish-card">
+    <div class="finish-icon">&#10003;</div>
+    <div class="finish-title">Тема пройдена!</div>
+    <div class="finish-score">Квиз: <strong id="finScore">5 из 5</strong></div>
+    <div class="finish-btns">
+      <a href="index.html" class="finish-btn finish-btn-sec">На плакат</a>
+      <button class="finish-btn finish-btn-pri" onclick="finStay()">Остаться в теме</button>
+    </div>
+  </div>
+</div>
+
+<script src="../shared.js"></script>
+<script>
+
+function fr(n, d) {
+  return '<span class="frac"><span class="frac-n">' + n + '</span><span class="frac-bar"></span><span class="frac-d">' + d + '</span></span>';
+}
+
+function fri(n, d) {
+  return ' ' + fr(n, d) + ' ';
+}
+
+var WORDS = {
+  '1/2':'одна вторая','1/3':'одна третья','1/4':'одна четвёртая',
+  '1/5':'одна пятая','2/3':'две третьих','3/4':'три четвёртых',
+  '2/5':'две пятых','3/5':'три пятых','1/6':'одна шестая',
+  '1/7':'одна седьмая','1/8':'одна восьмая','1/10':'одна десятая'
+};
+
+var GLOSSARY = [
+  {term:'Дробь',        def:'Запись вида' + fri('a','b') + ', где b — на сколько равных частей поделили целое, a — сколько взяли. Пример: <em>' + fr(3,8) + '</em> — взяли 3 части из 8.'},
+  {term:'Числитель',    def:'Верхнее число дроби. Показывает сколько частей взяли. В дроби' + fri(3,8) + 'числитель равен <em>3</em>.'},
+  {term:'Знаменатель',  def:'Нижнее число дроби. Показывает на сколько равных частей поделили целое. В дроби' + fri(3,8) + 'знаменатель равен <em>8</em>.'},
+  {term:'Доля',         def:'Одна из равных частей целого. Если пирог разрезан на 6 кусков — каждый кусок это <em>одна шестая</em>, или' + fri(1,6) + '.'},
+  {term:'Дробная черта',def:'Горизонтальная черта между числителем и знаменателем. Означает деление:' + fri(3,8) + 'читается как «три восьмых».'},
+  {term:'Целое',        def:'То, что делим на равные части. Целым может быть пирог, шоколадка, отрезок, <em>час времени</em>, километр пути.'}
+];
+
+var MATCH_PAIRS = [
+  {l:fr(3,8),          r:'Взяли 3 части из 8 равных'},
+  {l:'Числитель',      r:'Верхнее число — сколько взяли'},
+  {l:'Знаменатель',    r:'Нижнее число — на сколько делили'},
+  {l:fr(1,2),          r:'Взяли 1 часть из 2 — половина'},
+  {l:'Доля',           r:'Одна равная часть целого'},
+  {l:'Дробная черта',  r:'Черта между числителем и знаменателем'}
+];
+
+var READ_QS = [
+  {q:'Зачем людям понадобились дроби?',
+   opts:['Чтобы считать большие числа','Чтобы делить то, что нельзя разрезать на целые части','Чтобы измерять время','Чтобы строить пирамиды'], c:1},
+  {q:'Какие дроби использовали древние египтяне?',
+   opts:['Только дроби с числителем 1','Только целые числа','Дроби с любым числителем','Только дроби с чётным знаменателем'], c:0},
+  {q:'Откуда пришла современная запись дробей?',
+   opts:['Из Древней Греции','Из Китая','Из Индии через арабских математиков','Из Европы в эпоху Возрождения'], c:2}
+];
+
+var MISCONCEPTIONS = [
+  {
+    imgId: 'node1_img3',
+    imgRatio: '3/2',
+    hasImg: true,
+    imgDesc: 'Два одинаковых круглых пирога рядом на столе. Левый разрезан на 2 части — куски огромные. Правый разрезан на 10 частей — куски крошечные.',
+    label: 'Чем больше знаменатель — тем больше дробь?',
+    wrong: '"Чем больше знаменатель — тем больше дробь"',
+    whyWrong: 'Кажется логичным: больше число — значит больше. Дети переносят логику целых чисел на дроби.',
+    correct: 'Знаменатель показывает на сколько частей поделили целое — чем их больше, тем каждая меньше.' + fri(1,10) + '— это десять крошечных кусочков, а' + fri(1,2) + '— один большой. Поэтому' + fri(1,10) + 'намного меньше' + fri(1,2) + ', хотя 10 > 2.',
+    hint: 'Больше знаменатель — мельче кусок.'
+  },
+  {
+    imgId: 'node1_img4',
+    imgRatio: '3/2',
+    hasImg: true,
+    imgDesc: 'На заднем плане лежит целая шоколадная плитка из 8 одинаковых кусочков. Перед ней две тарелки: на левой — три кусочка шоколадки, на правой — восемь таких же кусочков.',
+    label: 'Числитель и знаменатель можно писать в любом порядке?',
+    wrong: '"Числитель и знаменатель — просто два числа, их можно писать в любом порядке"',
+    whyWrong: 'Ребёнок ещё не чувствует разницы между «взял» и «поделил» — оба числа кажутся равноправными.',
+    correct: 'Порядок принципиален.' + fri(3,8) + 'означает «взял 3 из 8», а' + fri(8,3) + '— совсем другое: «взял 8 из 3», то есть больше целого. Поменять числитель и знаменатель местами — это другая дробь.',
+    hint: 'Числитель сверху — результат. Знаменатель снизу — основание.'
+  }
+];
+
+var REMEMBER = [
+  'Дробь <strong>' + fr('a','b') + '</strong>: a — сколько взяли, b — на сколько делили',
+  'Числитель сверху, знаменатель снизу',
+  'Дробная черта — это знак деления',
+  'Больше знаменатель — меньше каждая часть',
+  fr(1,10) + ' < ' + fr(1,2) + ', хотя 10 > 2'
+];
+
+var SELFCHECK = [
+  'Что показывает знаменатель дроби?',
+  'Какая дробь больше —' + fri(1,3) + 'или' + fri(1,7) + '? Почему?',
+  'Запиши дробью: «три части из пяти»',
+  'Как называется черта между числителем и знаменателем?'
+];
+
+var QUIZ_QS = [
+  {q:'Торт разрезали на 8 равных кусков. Дети съели 5. Как записать съеденную часть?',
+   opts:[fr(5,8),fr(8,5),'5+8',fr(3,8)], c:0,
+   explain:'Числитель — сколько съели (5), знаменатель — на сколько делили (8).'},
+  {q:'В дроби' + fri(7,12) + 'что показывает число 12?',
+   opts:['Сколько частей взяли','На сколько равных частей поделили целое','Сколько частей осталось','Размер каждой части'], c:1,
+   explain:'12 — знаменатель, стоит снизу, показывает на сколько делили целое.'},
+  {q:'Какая дробь означает «половина»?',
+   opts:[fr(2,1),fr(1,2),fr(1,3),fr(2,2)], c:1,
+   explain:'Половина — одна из двух равных частей, то есть' + fri(1,2) + '.'},
+  {q:'Отрезок разделили на 5 равных частей. Одна часть — это...',
+   opts:[fr(1,4) + ' отрезка',fr(5,1) + ' отрезка',fr(1,5) + ' отрезка',fr(5,5) + ' отрезка'], c:2,
+   explain:'Делили на 5 частей, взяли 1 — значит' + fri(1,5) + '.'},
+  {q:'Пицца на 6 кусков. Петя съел 2, Маша — 1. Какую часть пиццы съели вместе?',
+   opts:[fr(2,6),fr(1,6),fr(3,6),fr(3,3)], c:2,
+   explain:'Вместе съели 2+1=3 куска из 6, то есть' + fri(3,6) + '.'}
+];
+
+var DYK = [
+  {
+    tag:'История',
+    title:'Откуда слово «дробь»',
+    teaser:'«Дробь» и «fractio» — слова из разных языков с одним смыслом: разлом.',
+    imgId:'node1_img5',
+    hasImg: true,
+    imgDesc:'Глиняная табличка с трещиной посередине — расколота на две половины. На левой: ДРОБЬ, на правой буквами в стиле римских надписей: FRACTIO.',
+    text:'<p>Слово «дробь» произошло от «дробить» — разбивать на мелкие части. По-латынски fraction — от fractio, «разлом».</p><p>В обоих языках дробь связана с идеей разбивания целого. Математика одна, слова разные — но смысл один.</p>'
+  },
+  {
+    tag:'Наука',
+    title:'Дроби везде — даже когда не замечаешь',
+    teaser:'Каждый раз когда говоришь «полчаса» — используешь дробь.',
+    imgId:'node1_img6',
+    hasImg: true,
+    imgDesc:'Три предмета в ряд: циферблат часов с выделенной четвертью (12 до 3), смартфон с зарядом 75%, календарь с выделенным одним месяцем из двенадцати.',
+    text:'<p>Сутки делятся на 24 часа — каждый час это' + fri(1,24) + 'суток. Год делится на 12 месяцев — каждый месяц примерно' + fri(1,12) + 'года.</p><p>«Полчаса» — это' + fri(1,2) + 'часа, 30 минут. Четверть часа —' + fri(1,4) + ', то есть 15 минут. Дроби вокруг нас даже когда мы их так не называем.</p>'
+  }
+];
+
+/* Симуляция */
+
+function makeChocSVG(active, isFirst, isLast) {
+  var bg     = active ? '#a3630c' : '#D9BC96';
+  var shine  = active ? '#cc841c' : '#B89A78';
+  var shadow = active ? '#A0621088' : '#BFA07888';
+  var rxL = isFirst ? '7' : '0';
+  var rxR = isLast  ? '7' : '0';
+  /* Строим path с закруглением только на нужных углах */
+  var w = 40; var h = 52;
+  var r = 7;
+  var path = '';
+  if (isFirst && isLast) {
+    path = 'M' + r + ',0 H' + (w-r) + ' Q' + w + ',0 ' + w + ',' + r
+      + ' V' + (h-r) + ' Q' + w + ',' + h + ' ' + (w-r) + ',' + h
+      + ' H' + r + ' Q0,' + h + ' 0,' + (h-r)
+      + ' V' + r + ' Q0,0 ' + r + ',0 Z';
+  } else if (isFirst) {
+    path = 'M' + r + ',0 H' + w + ' V' + h + ' H' + r
+      + ' Q0,' + h + ' 0,' + (h-r) + ' V' + r + ' Q0,0 ' + r + ',0 Z';
+  } else if (isLast) {
+    path = 'M0,0 H' + (w-r) + ' Q' + w + ',0 ' + w + ',' + r
+      + ' V' + (h-r) + ' Q' + w + ',' + h + ' ' + (w-r) + ',' + h
+      + ' H0 Z';
+  } else {
+    path = 'M0,0 H' + w + ' V' + h + ' H0 Z';
+  }
+  var sep = (!isLast)
+    ? '<line x1="' + w + '" y1="4" x2="' + w + '" y2="' + (h-4) + '" stroke="' + shadow + '" stroke-width="1.5"/>'
+    : '';
+  return '<svg width="40" height="52" viewBox="0 0 40 52" xmlns="http://www.w3.org/2000/svg">'
+    + '<path d="' + path + '" fill="' + bg + '"/>'
+    + '<path d="' + path + '" fill="' + shine + '" opacity="0.5" transform="scale(0.82) translate(3,3)"/>'
+    + sep
+    + '</svg>';
+}
+
+function buildChoc(den, num) {
+  var g = document.getElementById('chocGrid');
+  g.innerHTML = '';
+  for (var i = 0; i < den; i++) {
+    var cl = document.createElement('div');
+    cl.className = 'choc-cell-svg ' + (i < num ? 'on' : 'off');
+    cl.innerHTML = makeChocSVG(i < num, i === 0, i === den - 1);
+    g.appendChild(cl);
+  }
+  document.getElementById('fN').textContent = num;
+  document.getElementById('fD').textContent = den;
+  document.getElementById('fW').textContent = WORDS[num + '/' + den] || '';
+}
+
+function updateSim() {
+  var den = +document.getElementById('denS').value;
+  var ns  = document.getElementById('numS');
+  ns.max  = den;
+  var num = Math.min(+ns.value, den);
+  ns.value = num;
+  document.getElementById('dV').textContent = den;
+  document.getElementById('nV').textContent = num;
+  buildChoc(den, num);
+}
+
+function setP(d, n) {
+  document.getElementById('denS').value = d;
+  document.getElementById('numS').max   = d;
+  document.getElementById('numS').value = n;
+  updateSim();
+}
+
+document.getElementById('denS').addEventListener('input', updateSim);
+document.getElementById('numS').addEventListener('input', updateSim);
+updateSim();
+
+/* Чек-вопрос */
+
+var CHECK_OPTS = [
+  { text: fr(4,6),  correct: true  },
+  { text: fr(6,4),  correct: false },
+  { text: fr(2,6),  correct: false },
+  { text: '4+6',    correct: false }
+];
+
+function shuffleArr(arr) {
+  var a = arr.slice(), i, j, t;
+  for (i = a.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+function initCheck() {
+  document.getElementById('pBtn1').innerHTML = fr(1,2);
+  document.getElementById('pBtn2').innerHTML = fr(1,4);
+  document.getElementById('pBtn3').innerHTML = fr(2,3);
+  document.getElementById('pBtn4').innerHTML = fr(3,4);
+  var wrap    = document.getElementById('checkOpts');
+  var items   = shuffleArr(CHECK_OPTS);
+  var html    = '';
+  for (var i = 0; i < items.length; i++) {
+    html += '<button class="check-opt" data-correct="' + items[i].correct + '" onclick="chk(this)">' + items[i].text + '</button>';
+  }
+  wrap.innerHTML = html;
+}
+
+function chk(btn) {
+  checkAnswered = true;
+  var correct = btn.getAttribute('data-correct') === 'true';
+  var fb      = document.getElementById('checkFb');
+  var wrap    = document.getElementById('checkOpts');
+  var opts    = wrap.querySelectorAll('.check-opt');
+  var i;
+  if (correct) {
+    for (i = 0; i < opts.length; i++) { opts[i].classList.add('dis'); }
+    btn.classList.remove('dis');
+    btn.classList.add('correct');
+    fb.className   = 'check-fb ok';
+    fb.textContent = 'Точно! Числитель — сколько съели (4), знаменатель — на сколько делили (6).';
+  } else {
+    btn.classList.add('wrong');
+    fb.className   = 'check-fb err';
+    fb.textContent = 'Числитель — сколько частей взяли, знаменатель — на сколько делили целое.';
+    setTimeout(function() {
+      btn.classList.remove('wrong');
+      fb.className   = 'check-fb';
+      fb.textContent = '';
+    }, TIMING.wrongHint);
+  }
+}
+
+/* Опорный конспект */
+
+function toggleCS() {
+  document.getElementById('csToggle').classList.toggle('open');
+  document.getElementById('csBody').classList.toggle('open');
+}
+
+/* Глоссарий */
+
+function initGloss() {
+  var list = document.getElementById('glossList');
+  for (var i = 0; i < GLOSSARY.length; i++) {
+    var item = GLOSSARY[i];
+    var el   = document.createElement('div');
+    el.className = 'gloss-item';
+    el.innerHTML =
+      '<div class="gloss-head" onclick="this.parentElement.classList.toggle(\'open\')">'
+      + '<span class="gloss-term">' + item.term + '</span>'
+      + '<span class="gloss-arrow">&#9662;</span></div>'
+      + '<div class="gloss-body">' + item.def + '</div>';
+    list.appendChild(el);
+  }
+}
+
+/* Match */
+
+var mSel = null, mDone = 0;
+
+function initMatch() {
+  mSel = null; mDone = 0;
+  document.getElementById('mCnt').textContent    = '0';
+  document.getElementById('mReset').style.display = 'none';
+  var pairs  = shuffle(MATCH_PAIRS.slice().map(function(p, idx) {
+    return { l: p.l, r: p.r, key: idx };
+  }));
+  var rights = shuffle(pairs.slice());
+  var lC = document.getElementById('mL');
+  var rC = document.getElementById('mR');
+  lC.innerHTML = ''; rC.innerHTML = '';
+  var i;
+  for (i = 0; i < pairs.length; i++) {
+    (function(p) {
+      var b = document.createElement('button');
+      b.className    = 'match-item';
+      b.innerHTML    = p.l;
+      b.dataset.key  = p.key;
+      b.dataset.side = 'l';
+      b.onclick = function() { mClick(b); };
+      lC.appendChild(b);
+    })(pairs[i]);
+  }
+  for (i = 0; i < rights.length; i++) {
+    (function(p) {
+      var b = document.createElement('button');
+      b.className    = 'match-item';
+      b.innerHTML    = p.r;
+      b.dataset.key  = p.key;
+      b.dataset.side = 'r';
+      b.onclick = function() { mClick(b); };
+      rC.appendChild(b);
+    })(rights[i]);
+  }
+}
+
+function mClick(btn) {
+  if (btn.classList.contains('done') || btn.classList.contains('dis')) return;
+  if (!mSel) { mSel = btn; btn.classList.add('sel'); return; }
+  if (mSel === btn) { mSel.classList.remove('sel'); mSel = null; return; }
+  var a = mSel, b = btn;
+  var ok = a.dataset.side !== b.dataset.side &&
+           (a.dataset.key === b.dataset.key);
+  a.classList.remove('sel');
+  if (ok) {
+    a.classList.add('done'); b.classList.add('done');
+    mDone++;
+    document.getElementById('mCnt').textContent = mDone;
+    if (mDone === 6) { document.getElementById('mReset').style.display = 'block'; }
+  } else {
+    a.classList.add('bad'); b.classList.add('bad');
+    setTimeout(function() { a.classList.remove('bad'); b.classList.remove('bad'); }, TIMING.matchShake);
+  }
+  mSel = null;
+}
+
+/* Чтение */
+
+function initRead() {
+  var wrap = document.getElementById('readQs');
+  for (var qi = 0; qi < READ_QS.length; qi++) {
+    (function(q, idx) {
+      var items = shuffleArr(q.opts.map(function(text, i) {
+        return { text: text, correct: i === q.c };
+      }));
+      var opts = '';
+      for (var i = 0; i < items.length; i++) {
+        opts += '<button class="read-opt" data-correct="' + items[i].correct + '" onclick="rdAns(this,' + idx + ')">' + items[i].text + '</button>';
+      }
+      var el = document.createElement('div');
+      el.innerHTML = '<div class="read-q-t">' + (idx + 1) + '. ' + q.q + '</div>'
+        + '<div class="read-opts">' + opts + '</div>';
+      wrap.appendChild(el);
+    })(READ_QS[qi], qi);
+  }
+}
+
+function rdAns(btn, qi) {
+  var ok   = btn.getAttribute('data-correct') === 'true';
+  var opts = btn.closest('.read-opts').querySelectorAll('.read-opt');
+  var i;
+  for (i = 0; i < opts.length; i++) { opts[i].style.pointerEvents = 'none'; }
+  btn.classList.add(ok ? 'correct' : 'wrong');
+  if (!ok) {
+    for (i = 0; i < opts.length; i++) {
+      if (opts[i].getAttribute('data-correct') === 'true') { opts[i].classList.add('correct'); }
+    }
+  }
+}
+
+/* Misconceptions */
+
+var miscActive = -1;
+
+function initMisc() {
+  var grid = document.getElementById('miscGrid');
+  for (var i = 0; i < MISCONCEPTIONS.length; i++) {
+    (function(m, idx) {
+      var card = document.createElement('div');
+      card.className = 'misc-card';
+      card.id = 'miscCard' + idx;
+      var miscImgHtml = m.hasImg
+        ? '<img src="' + m.imgId + '.png" alt="' + m.label + '" style="width:100%;aspect-ratio:' + m.imgRatio + ';object-fit:cover;display:block;border-radius:0;">'
+        : '<div class="img-placeholder" style="aspect-ratio:' + m.imgRatio + ';border-radius:0;border:none;background:#EDE6D8;">'
+          + '<div class="img-placeholder-icon">\uD83D\uDDBC</div>'
+          + '<div class="img-placeholder-id">' + m.imgId + ' \xb7 3:2</div>'
+          + '<div class="img-placeholder-desc" style="font-size: 15px;">' + m.imgDesc + '</div>'
+          + '</div>';
+      card.innerHTML =
+        miscImgHtml
+        + '<div class="misc-card-label">' + m.label + '</div>';
+      card.onclick = function() { miscToggle(idx); };
+      grid.appendChild(card);
+    })(MISCONCEPTIONS[i], i);
+  }
+}
+
+function miscToggle(idx) {
+  var panel = document.getElementById('miscPanel');
+  var i, c;
+  if (miscActive === idx) {
+    miscActive = -1;
+    panel.className = 'misc-panel';
+    panel.innerHTML = '';
+    for (i = 0; i < MISCONCEPTIONS.length; i++) {
+      c = document.getElementById('miscCard' + i);
+      if (c) c.classList.remove('active');
+    }
+    return;
+  }
+  miscActive = idx;
+  for (i = 0; i < MISCONCEPTIONS.length; i++) {
+    c = document.getElementById('miscCard' + i);
+    if (c) c.classList.remove('active');
+  }
+  c = document.getElementById('miscCard' + idx);
+  if (c) c.classList.add('active');
+  var m = MISCONCEPTIONS[idx];
+  var iconSVG = '<svg class="misc-panel-head-icon" width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">'
+    + '<circle cx="11" cy="11" r="11" fill="#EF4444"/>'
+    + '<line x1="7" y1="7" x2="15" y2="15" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
+    + '<line x1="15" y1="7" x2="7" y2="15" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
+    + '</svg>';
+  panel.innerHTML =
+    '<div class="misc-panel-head">' + iconSVG + '<div class="misc-wrong">' + m.wrong + '</div></div>'
+    + '<div class="misc-body">'
+    + '<div class="misc-why">' + m.whyWrong + '</div>'
+    + '<div class="misc-correct">' + m.correct + '</div>'
+    + '<div class="misc-hint">' + m.hint + '</div>'
+    + '</div>';
+  panel.className = 'misc-panel open';
+}
+
+/* Запомни */
+
+function initRemember() {
+  var list = document.getElementById('rememberList');
+  for (var i = 0; i < REMEMBER.length; i++) {
+    var el = document.createElement('div');
+    el.className = 'remember-item';
+    el.innerHTML = '<div class="remember-dot"></div><div class="remember-text">' + REMEMBER[i] + '</div>';
+    list.appendChild(el);
+  }
+}
+
+/* Проверь себя */
+
+function initSelfcheck() {
+  var list = document.getElementById('selfcheckList');
+  for (var i = 0; i < SELFCHECK.length; i++) {
+    var el = document.createElement('div');
+    el.className = 'selfcheck-item';
+    el.innerHTML = '<span class="selfcheck-num">' + (i + 1) + '.</span>' + SELFCHECK[i];
+    list.appendChild(el);
+  }
+}
+
+/* Квиз */
+
+var qIdx = 0, qScore = 0, qAns = false;
+var qResults = [];
+
+function initQuiz() { qIdx = 0; qScore = 0; qResults = []; renderQProg(); renderQ(); }
+
+function renderQProg() {
+  var w = document.getElementById('qProg');
+  w.innerHTML = '';
+  for (var i = 0; i < QUIZ_QS.length; i++) {
+    var d = document.createElement('div');
+    if (i < qIdx) {
+      d.className = 'quiz-dot ' + (qResults[i] ? 'correct' : 'wrong');
+    } else if (i === qIdx) {
+      d.className = 'quiz-dot current';
+    } else {
+      d.className = 'quiz-dot';
+    }
+    w.appendChild(d);
+  }
+}
+
+function renderQ() {
+  if (qIdx >= QUIZ_QS.length) return;
+  qAns = false;
+  var q     = QUIZ_QS[qIdx];
+  var items = shuffleArr(q.opts.map(function(text, i) {
+    return { text: text, correct: i === q.c };
+  }));
+  var opts = '';
+  for (var i = 0; i < items.length; i++) {
+    opts += '<button class="quiz-opt" data-correct="' + items[i].correct + '" onclick="qClick(this,' + qIdx + ')">' + items[i].text + '</button>';
+  }
+  document.getElementById('qCard').innerHTML =
+    '<div class="quiz-qw">'
+    + '<div class="quiz-cnt">Вопрос ' + (qIdx + 1) + ' из ' + QUIZ_QS.length + '</div>'
+    + '<div class="quiz-qt">' + q.q + '</div></div>'
+    + '<div class="quiz-opts">' + opts + '</div>'
+    + '<div class="quiz-explain" id="qExplain"></div>'
+    + '<button class="quiz-next" id="qNext" onclick="qNext()">Следующий вопрос →</button>';
+}
+
+function qClick(btn, qi) {
+  if (qAns) return;
+  qAns = true;
+  var correct = btn.getAttribute('data-correct') === 'true';
+  var opts    = btn.closest('.quiz-opts').querySelectorAll('.quiz-opt');
+  var i;
+  for (i = 0; i < opts.length; i++) { opts[i].style.pointerEvents = 'none'; }
+  if (correct) { btn.classList.add('correct'); qScore++; }
+  else {
+    btn.classList.add('wrong');
+    for (i = 0; i < opts.length; i++) {
+      if (opts[i].getAttribute('data-correct') === 'true') { opts[i].classList.add('correct'); }
+    }
+  }
+  var expl = document.getElementById('qExplain');
+  expl.innerHTML = QUIZ_QS[qi].explain;
+  expl.className = 'quiz-explain show ' + (correct ? 'ok' : 'err');
+  qResults[qi] = correct;
+  var dot = document.getElementById('qProg').children[qi];
+  if (dot) { dot.className = 'quiz-dot ' + (correct ? 'correct' : 'wrong'); }
+  var nextBtn = document.getElementById('qNext');
+  if (nextBtn) {
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = (qi + 1 < QUIZ_QS.length) ? 'Следующий вопрос \u2192' : 'Завершить \u2192';
+  }
+}
+
+function qNext() {
+  qIdx++;
+  renderQProg();
+  if (qIdx < QUIZ_QS.length) { renderQ(); }
+  else { showFinish(); }
+}
+
+/* DYK */
+
+var dykActive = -1;
+var checkAnswered = false;
+
+function initDYK() {
+  var grid = document.getElementById('dykGrid');
+  for (var i = 0; i < DYK.length; i++) {
+    (function(d, idx) {
+      var card = document.createElement('div');
+      card.className = 'dyk-card';
+      card.id = 'dykCard' + idx;
+      var imgHtml = d.hasImg
+        ? '<img src="' + d.imgId + '.png" alt="' + d.title + '" style="width:100%;aspect-ratio:3/2;object-fit:cover;display:block;border-radius:0;">'
+        : '<div class="img-placeholder img-ph-3-2" style="border-radius:0;border:none;background:#EDE6D8;">'
+          + '<div class="img-placeholder-icon">\uD83D\uDDBC</div>'
+          + '<div class="img-placeholder-id">' + d.imgId + ' \xb7 3:2</div>'
+          + '<div class="img-placeholder-desc" style="font-size: 15px;">' + d.imgDesc + '</div>'
+          + '</div>';
+      card.innerHTML = imgHtml
+        + '<div class="dyk-card-body">'
+        + '<div class="dyk-tag">' + d.tag + '</div>'
+        + '<div class="dyk-title">' + d.title + '</div>'
+        + '</div>';
+      card.onclick = function() { dykToggle(idx); };
+      grid.appendChild(card);
+    })(DYK[i], i);
+  }
+}
+
+function dykToggle(idx) {
+  var panel = document.getElementById('dykPanel');
+  var i, c;
+  if (dykActive === idx) {
+    dykActive = -1;
+    panel.className = 'dyk-panel';
+    panel.innerHTML = '';
+    for (i = 0; i < DYK.length; i++) {
+      c = document.getElementById('dykCard' + i);
+      if (c) c.classList.remove('active');
+    }
+    return;
+  }
+  dykActive = idx;
+  for (i = 0; i < DYK.length; i++) {
+    c = document.getElementById('dykCard' + i);
+    if (c) c.classList.remove('active');
+  }
+  c = document.getElementById('dykCard' + idx);
+  if (c) c.classList.add('active');
+  var d = DYK[idx];
+  panel.innerHTML =
+    '<div class="dyk-panel-head">'
+    + '<div class="dyk-panel-tag">' + d.tag + '</div>'
+    + '<div class="dyk-panel-title">' + d.title + '</div>'
+    + '</div>'
+    + '<div class="dyk-panel-body">'
+    + '<div class="dyk-panel-teaser">' + d.teaser + '</div>'
+    + d.text
+    + '</div>';
+  panel.className = 'dyk-panel open';
+}
+
+/* Финиш */
+
+function showFinish() {
+  document.getElementById('finScore').textContent = qScore + ' из ' + QUIZ_QS.length;
+  document.getElementById('finOv').classList.add('show');
+  if (checkAnswered) { try { Progress.markDone('node1'); } catch(e) {} }
+}
+
+function finStay() {
+  document.getElementById('finOv').classList.remove('show');
+}
+
+/* Инициализация */
+
+initCheck();
+initGloss();
+initMatch();
+initRead();
+initMisc();
+initRemember();
+initSelfcheck();
+initQuiz();
+initDYK();
+
+</script>
+</body>
+</html>

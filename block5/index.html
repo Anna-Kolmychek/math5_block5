@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Что такое дробь? — Блок 5</title>
+  <link rel="stylesheet" href="../shared.css">
+  <style>
+    body {
+      background: #F5F0E8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #1a1a1a;
+    }
+
+    .col {
+      width: 100%;
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+    @media (min-width: 600px) {
+      .col { width: min(100vw - 32px, 640px); }
+    }
+    @media (min-width: 1024px) {
+      .col { width: 960px; }
+    }
+
+    .col-full { width: 100%; }
+    @media (min-width: 600px) {
+      .col-full { width: min(100vw - 32px, 640px); }
+    }
+    @media (min-width: 1024px) {
+      .col-full { width: 960px; }
+    }
+
+    /* Верхняя навигация */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      padding-bottom: 0;
+    }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff;
+      border: 1.5px solid #E0D8CC;
+      border-radius: 50px;
+      padding: 8px 16px;
+      font-family: var(--font-main);
+      font-size: 13px;
+      font-weight: 700;
+      color: #555;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-btn:active { background: #EDE8DF; }
+
+    .progress-pill {
+      background: #fff;
+      border: 1.5px solid #E0D8CC;
+      border-radius: 50px;
+      padding: 5px 14px;
+      font-family: var(--font-main);
+      font-size: 12px;
+      font-weight: 700;
+      color: #666;
+      white-space: nowrap;
+    }
+    .progress-pill span { color: #2D9E5F; font-weight: 800; }
+
+    /* Шапка блока */
+    .block-header {
+      padding-top: 20px;
+      padding-bottom: 12px;
+      text-align: center;
+    }
+    .block-eyebrow {
+      font-family: var(--font-main);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #AAA098;
+      margin-bottom: 8px;
+    }
+    .block-title {
+      font-family: var(--font-main);
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.5px;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+    .block-title span { color: #C47C1A; }
+    .block-subtitle {
+      font-size: 14px;
+      color: #888;
+      line-height: 1.55;
+    }
+
+    /* Плакат */
+    .poster-wrap { position: relative; }
+    .poster-img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      user-select: none;
+      -webkit-user-drag: none;
+      border-radius: 16px;
+      border: 1.5px solid #E0D8CC;
+    }
+
+    /* Тапаемые зоны */
+    .tap-zone {
+      position: absolute;
+      left: 2%;
+      width: 96%;
+      cursor: pointer;
+      border-radius: 14px;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+      overflow: hidden;
+    }
+    .tap-zone:active { opacity: 0.85; }
+
+    .zone1 { top: 13%; height: 19%; }
+    .zone2 { top: 34%; height: 26%; }
+    .zone3 { top: 61%; height: 17%; }
+    .zone4 { top: 79%; height: 14%; }
+
+    /* Оверлей поверх зоны */
+    .zone-overlay {
+      position: absolute; inset: 0;
+      border-radius: 14px;
+      background: rgba(196,124,26,0);
+      transition: background 0.35s;
+      pointer-events: none;
+    }
+
+    /* Ярлык с названием темы */
+    .zone-label {
+      position: relative; z-index: 2;
+      background: rgba(26,16,4,0.82);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 50px;
+      padding: 7px 16px 7px 12px;
+      display: flex; align-items: center; gap: 8px;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .zone-label-num {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: #C47C1A;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .zone-label-text {
+      font-family: var(--font-main); font-size: 13px; font-weight: 700;
+      color: #fff; letter-spacing: 0.01em;
+    }
+    .zone-label-arrow {
+      font-size: 11px; color: rgba(255,255,255,0.6); margin-left: 2px;
+    }
+
+    /* Активное состояние анимации */
+    .tap-zone.seq-active .zone-overlay {
+      background: rgba(196,124,26,0.13);
+    }
+    .tap-zone.seq-active .zone-label {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Десктоп hover */
+    @media (hover: hover) {
+      .tap-zone:hover .zone-overlay {
+        background: rgba(196,124,26,0.15);
+      }
+      .tap-zone:hover .zone-label {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Галочка прогресса */
+    .done-badge {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: #22C55E;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 10px rgba(34,197,94,0.4);
+      opacity: 0;
+      transform: scale(0.3) rotate(-30deg);
+      transition: opacity 0.3s, transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      pointer-events: none;
+    }
+    .done-badge.visible { opacity: 1; transform: scale(1) rotate(0deg); }
+
+    /* Подсказка */
+    .hint {
+      position: absolute;
+      top: 52%; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(26,26,26,0.85);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50px;
+      padding: 9px 20px;
+      font-family: var(--font-main);
+      font-size: 13px; font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 20;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100%{ transform: translateX(-50%) translateY(0); }
+      50%{ transform: translateX(-50%) translateY(-7px); }
+    }
+
+    /* Прогресс-панель */
+    .progress-block { padding-top: 14px; padding-bottom: 4px; }
+    .progress-label {
+      font-family: var(--font-main);
+      font-size: 11px; font-weight: 800;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #AAA098; margin-bottom: 10px;
+    }
+    .pnodes {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 8px;
+    }
+    .pnode {
+      background: #fff;
+      border: 1.5px solid #E0D8CC;
+      border-radius: 12px;
+      padding: 10px 6px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.2s, background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .pnode:active { transform: scale(0.93); }
+    .pnode.done {
+      border-color: rgba(45,158,95,0.25);
+      background: #F4FAF6;
+    }
+    .pnode-n {
+      font-family: var(--font-main);
+      font-size: 20px; font-weight: 900;
+      color: #CCC5BA; line-height: 1; margin-bottom: 4px;
+    }
+    .pnode.done .pnode-n { color: #2D9E5F; }
+    .pnode-t {
+      font-size: 9px; font-weight: 700;
+      color: #AAA098; line-height: 1.3;
+    }
+    .pnode.done .pnode-t { color: #2D9E5F; }
+    .pnode-v { font-size: 13px; margin-top: 4px; opacity: 0; transition: opacity 0.3s; color: #2D9E5F; }
+    .pnode.done .pnode-v { opacity: 1; }
+
+    /* Навигация между плакатами */
+    .poster-nav {
+      padding-top: 12px; padding-bottom: 36px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+    .poster-nav-btn {
+      background: #fff;
+      border: 1.5px solid #E0D8CC;
+      border-radius: 14px; padding: 14px;
+      cursor: pointer; text-decoration: none;
+      transition: background 0.15s, border-color 0.15s, transform 0.12s;
+      -webkit-tap-highlight-color: transparent;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .poster-nav-btn:active { transform: scale(0.97); }
+    .poster-nav-btn:hover { background: #EDE8DF; border-color: #C47C1A; }
+    .poster-nav-btn.disabled { opacity: 0.35; pointer-events: none; }
+    .pnb-dir {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #AAA098;
+    }
+    .pnb-title {
+      font-family: var(--font-main);
+      font-size: 13px; font-weight: 800;
+      color: #333; line-height: 1.3;
+    }
+    .pnb-arrow { font-size: 18px; color: #C8BFB0; margin-top: 2px; }
+    .poster-nav-btn.next { text-align: right; }
+
+    /* Масштабирование */
+    @media (min-width: 600px) {
+      .nav-btn        { font-size: clamp(13px, 2.2vw, 20px); padding: clamp(8px,1.3vw,14px) clamp(16px,2.5vw,28px); }
+      .progress-pill  { font-size: clamp(12px, 2vw, 18px); padding: clamp(5px,0.9vw,10px) clamp(12px,2vw,22px); }
+      .block-eyebrow  { font-size: clamp(11px, 1.8vw, 17px); }
+      .block-title    { font-size: clamp(34px, 5.5vw, 58px); }
+      .block-subtitle { font-size: clamp(14px, 2.3vw, 22px); }
+      .intro-text     { font-size: clamp(14px, 2.3vw, 22px); line-height: 1.75; }
+      .intro-card     { padding: clamp(16px,2.6vw,30px) clamp(18px,2.8vw,34px); border-radius: clamp(16px,2.5vw,24px); }
+      .progress-label { font-size: clamp(11px, 1.8vw, 17px); margin-bottom: clamp(10px,1.6vw,18px); }
+      .pnodes         { gap: clamp(8px,1.4vw,16px); }
+      .pnode          { padding: clamp(10px,1.7vw,20px) clamp(6px,1vw,12px) clamp(8px,1.4vw,16px); border-radius: clamp(12px,2vw,20px); }
+      .pnode-n        { font-size: clamp(20px, 3.4vw, 36px); margin-bottom: clamp(4px,0.7vw,8px); }
+      .pnode-t        { font-size: clamp(9px,  1.6vw, 15px); }
+      .pnode-v        { font-size: clamp(13px, 2.2vw, 20px); margin-top: clamp(4px,0.7vw,8px); }
+      .pnb-dir        { font-size: clamp(10px, 1.7vw, 15px); }
+      .pnb-title      { font-size: clamp(13px, 2.3vw, 22px); }
+      .pnb-arrow      { font-size: clamp(18px, 3vw, 30px); }
+      .poster-nav-btn { padding: clamp(14px,2.3vw,26px); border-radius: clamp(14px,2.2vw,22px); }
+      .poster-nav     { gap: clamp(10px,1.7vw,18px); padding-bottom: clamp(36px,5.5vw,60px); }
+      .hint           { font-size: clamp(13px, 2.2vw, 22px); padding: clamp(9px,1.5vw,16px) clamp(20px,3.2vw,36px); }
+      .done-badge     { width: clamp(30px,4.8vw,52px); height: clamp(30px,4.8vw,52px); }
+      .zone-label     { padding: clamp(7px,1.1vw,13px) clamp(16px,2.4vw,28px) clamp(7px,1.1vw,13px) clamp(12px,1.8vw,22px); gap: clamp(8px,1.2vw,14px); }
+      .zone-label-num { width: clamp(30px,4.2vw,50px); height: clamp(30px,4.2vw,50px); }
+      .zone-label-num svg { width: clamp(22px,2.4vw,28px); height: clamp(22px,2.4vw,28px); }
+      .zone-label-text { font-size: clamp(13px,2vw,22px); }
+      .zone-label-arrow { font-size: clamp(11px,1.7vw,18px); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Верхняя навигация -->
+  <div class="col top-nav">
+    <a href="../index.html" class="nav-btn">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+        <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      К курсу
+    </a>
+    <div class="progress-pill"><span id="doneCount">0</span>/4 пройдено</div>
+  </div>
+
+  <!-- Шапка блока -->
+  <div class="col block-header">
+    <div class="block-eyebrow">Математика · 5 класс · Блок 5</div>
+    <div class="block-title">Что такое <span>дробь?</span></div>
+    <div class="block-subtitle">Часть целого · числитель и знаменатель ·<br>правильные и неправильные · числовая прямая</div>
+  </div>
+
+  <!-- Плакат с тапаемыми зонами -->
+  <div class="col-full poster-wrap">
+    <img class="poster-img" src="poster.png" alt="Что такое дробь" draggable="false">
+
+    <div class="tap-zone zone1" id="zone1" onclick="goNode(1)">
+      <div class="zone-overlay"></div>
+      <div class="zone-label">
+        <div class="zone-label-num">
+            <svg width="22" height="22" viewBox="0 0 256 256" fill="white">
+              <path d="M196,84a31.94,31.94,0,0,0-11.22,2A32,32,0,0,0,148,69V44a32,32,0,0,0-64,0v66.83A32,32,0,0,0,32.25,148l4.68,8.24C71.11,216.48,86.72,244,136,244a92.1,92.1,0,0,0,92-92V116A32,32,0,0,0,196,84Zm8,68a68.08,68.08,0,0,1-68,68c-34,0-43.49-14.45-78.2-75.65l-4.69-8.28a.16.16,0,0,1,0-.07,8,8,0,0,1,13.86-8c.06.12.13.23.2.35l18.68,30A12,12,0,0,0,108,152V44a8,8,0,0,1,16,0v68a12,12,0,0,0,24,0V100a8,8,0,0,1,16,0v20a12,12,0,0,0,24,0v-4a8,8,0,0,1,16,0Z"/>
+            </svg>
+          </div>
+        <div class="zone-label-text">Доли и дроби</div>
+        <div class="zone-label-arrow">→</div>
+      </div>
+      <div class="done-badge" id="badge1" style="position:absolute;top:8px;right:8px;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2 7L5.5 10.5L12 3.5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="tap-zone zone2" id="zone2" onclick="goNode(2)">
+      <div class="zone-overlay"></div>
+      <div class="zone-label">
+        <div class="zone-label-num">
+            <svg width="22" height="22" viewBox="0 0 256 256" fill="white">
+              <path d="M196,84a31.94,31.94,0,0,0-11.22,2A32,32,0,0,0,148,69V44a32,32,0,0,0-64,0v66.83A32,32,0,0,0,32.25,148l4.68,8.24C71.11,216.48,86.72,244,136,244a92.1,92.1,0,0,0,92-92V116A32,32,0,0,0,196,84Zm8,68a68.08,68.08,0,0,1-68,68c-34,0-43.49-14.45-78.2-75.65l-4.69-8.28a.16.16,0,0,1,0-.07,8,8,0,0,1,13.86-8c.06.12.13.23.2.35l18.68,30A12,12,0,0,0,108,152V44a8,8,0,0,1,16,0v68a12,12,0,0,0,24,0V100a8,8,0,0,1,16,0v20a12,12,0,0,0,24,0v-4a8,8,0,0,1,16,0Z"/>
+            </svg>
+          </div>
+        <div class="zone-label-text">Правильные и неправильные</div>
+        <div class="zone-label-arrow">→</div>
+      </div>
+      <div class="done-badge" id="badge2" style="position:absolute;top:8px;right:8px;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2 7L5.5 10.5L12 3.5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="tap-zone zone3" id="zone3" onclick="goNode(3)">
+      <div class="zone-overlay"></div>
+      <div class="zone-label">
+        <div class="zone-label-num">
+            <svg width="22" height="22" viewBox="0 0 256 256" fill="white">
+              <path d="M196,84a31.94,31.94,0,0,0-11.22,2A32,32,0,0,0,148,69V44a32,32,0,0,0-64,0v66.83A32,32,0,0,0,32.25,148l4.68,8.24C71.11,216.48,86.72,244,136,244a92.1,92.1,0,0,0,92-92V116A32,32,0,0,0,196,84Zm8,68a68.08,68.08,0,0,1-68,68c-34,0-43.49-14.45-78.2-75.65l-4.69-8.28a.16.16,0,0,1,0-.07,8,8,0,0,1,13.86-8c.06.12.13.23.2.35l18.68,30A12,12,0,0,0,108,152V44a8,8,0,0,1,16,0v68a12,12,0,0,0,24,0V100a8,8,0,0,1,16,0v20a12,12,0,0,0,24,0v-4a8,8,0,0,1,16,0Z"/>
+            </svg>
+          </div>
+        <div class="zone-label-text">Смешанные числа</div>
+        <div class="zone-label-arrow">→</div>
+      </div>
+      <div class="done-badge" id="badge3" style="position:absolute;top:8px;right:8px;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2 7L5.5 10.5L12 3.5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="tap-zone zone4" id="zone4" onclick="goNode(4)">
+      <div class="zone-overlay"></div>
+      <div class="zone-label">
+        <div class="zone-label-num">
+            <svg width="22" height="22" viewBox="0 0 256 256" fill="white">
+              <path d="M196,84a31.94,31.94,0,0,0-11.22,2A32,32,0,0,0,148,69V44a32,32,0,0,0-64,0v66.83A32,32,0,0,0,32.25,148l4.68,8.24C71.11,216.48,86.72,244,136,244a92.1,92.1,0,0,0,92-92V116A32,32,0,0,0,196,84Zm8,68a68.08,68.08,0,0,1-68,68c-34,0-43.49-14.45-78.2-75.65l-4.69-8.28a.16.16,0,0,1,0-.07,8,8,0,0,1,13.86-8c.06.12.13.23.2.35l18.68,30A12,12,0,0,0,108,152V44a8,8,0,0,1,16,0v68a12,12,0,0,0,24,0V100a8,8,0,0,1,16,0v20a12,12,0,0,0,24,0v-4a8,8,0,0,1,16,0Z"/>
+            </svg>
+          </div>
+        <div class="zone-label-text">Числовая прямая</div>
+        <div class="zone-label-arrow">→</div>
+      </div>
+      <div class="done-badge" id="badge4" style="position:absolute;top:8px;right:8px;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2 7L5.5 10.5L12 3.5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- Прогресс -->
+  <div class="col progress-block">
+    <div class="progress-label">Темы блока</div>
+    <div class="pnodes">
+      <div class="pnode" id="pnode1" onclick="goNode(1)">
+        <div class="pnode-n">1</div>
+        <div class="pnode-t">Доли и дроби</div>
+        <div class="pnode-v">✓</div>
+      </div>
+      <div class="pnode" id="pnode2" onclick="goNode(2)">
+        <div class="pnode-n">2</div>
+        <div class="pnode-t">Правильные и неправ.</div>
+        <div class="pnode-v">✓</div>
+      </div>
+      <div class="pnode" id="pnode3" onclick="goNode(3)">
+        <div class="pnode-n">3</div>
+        <div class="pnode-t">Смешанные числа</div>
+        <div class="pnode-v">✓</div>
+      </div>
+      <div class="pnode" id="pnode4" onclick="goNode(4)">
+        <div class="pnode-n">4</div>
+        <div class="pnode-t">Числовая прямая</div>
+        <div class="pnode-v">✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Навигация между плакатами -->
+  <div class="col poster-nav">
+    <a href="#" class="poster-nav-btn" onclick="alert('Предыдущий плакат — скоро')">
+      <div class="pnb-dir">Предыдущий плакат</div>
+      <div class="pnb-title">Фигуры на плоскости</div>
+      <div class="pnb-arrow">←</div>
+    </a>
+    <a href="#" class="poster-nav-btn next" onclick="alert('Следующий плакат — скоро')">
+      <div class="pnb-dir">Следующий плакат</div>
+      <div class="pnb-title">Преобразование дробей</div>
+      <div class="pnb-arrow">→</div>
+    </a>
+  </div>
+
+  <script src="../shared.js"></script>
+  <script>
+    function initProgress() {
+      document.getElementById('doneCount').textContent = Progress.countDone();
+      var doneZones = [];
+      for (var i = 0; i < NODES.length; i++) {
+        var n = i + 1;
+        if (Progress.isDone(NODES[i])) {
+          var badge = document.getElementById('badge' + n);
+          var pnode = document.getElementById('pnode' + n);
+          if (badge) badge.classList.add('visible');
+          if (pnode) pnode.classList.add('done');
+          doneZones.push(n);
+        }
+      }
+      startSeqGlow(doneZones);
+    }
+
+    var seqTimer = null;
+    var seqFadeTimer = null;
+    var seqIdx   = 0;
+    var seqZones = [];
+    var seqDone  = [];
+    var seqPaused = false;
+
+    function clearAllGlow() {
+      for (var k = 1; k <= 4; k++) {
+        var z = document.getElementById('zone' + k);
+        if (z) z.classList.remove('seq-active');
+      }
+    }
+
+    function startSeqGlow(doneZones) {
+      seqZones = [1, 2, 3, 4];
+      seqDone = doneZones;
+      seqIdx = 0;
+      glowNext();
+    }
+
+    function glowNext() {
+      if (seqPaused) return;
+      clearAllGlow();
+
+      /* Ищем следующую незавершённую зону начиная с seqIdx */
+      var found = -1;
+      for (var attempt = 0; attempt < 4; attempt++) {
+        var candidate = seqZones[(seqIdx + attempt) % 4];
+        var isDone = false;
+        for (var d = 0; d < seqDone.length; d++) {
+          if (seqDone[d] === candidate) { isDone = true; break; }
+        }
+        if (!isDone) { found = candidate; seqIdx = (seqIdx + attempt + 1) % 4; break; }
+      }
+
+      if (found === -1) return; /* Все пройдены */
+
+      var el = document.getElementById('zone' + found);
+      if (el) el.classList.add('seq-active');
+
+      seqTimer = setTimeout(function() {
+        clearAllGlow();
+        seqFadeTimer = setTimeout(glowNext, 400);
+      }, 1800);
+    }
+
+    /* Пауза при наведении на плакат */
+    var posterWrap = document.querySelector('.poster-wrap');
+    if (posterWrap) {
+      posterWrap.addEventListener('mouseenter', function() {
+        seqPaused = true;
+        if (seqTimer) { clearTimeout(seqTimer); seqTimer = null; }
+        if (seqFadeTimer) { clearTimeout(seqFadeTimer); seqFadeTimer = null; }
+        clearAllGlow();
+      });
+      posterWrap.addEventListener('mouseleave', function() {
+        seqPaused = false;
+        glowNext();
+      });
+    }
+
+    function hideHint() {
+      var h = document.getElementById('hint');
+      if (!h) return;
+      h.style.transition = 'opacity 0.4s';
+      h.style.opacity = '0';
+      setTimeout(function() { var hh = document.getElementById('hint'); if (hh) hh.parentNode.removeChild(hh); }, 400);
+      try { localStorage.setItem(BLOCK_ID + '_hint', '1'); } catch(e) {}
+    }
+
+    var zones = document.querySelectorAll('.tap-zone');
+    for (var zi = 0; zi < zones.length; zi++) {
+      zones[zi].addEventListener('click', hideHint, { once: true });
+    }
+    try {
+      if (localStorage.getItem(BLOCK_ID + '_hint')) hideHint();
+    } catch(e) {}
+
+    initProgress();
+  </script>
+</body>
+</html>

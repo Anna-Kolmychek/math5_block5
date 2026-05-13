@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Узел 4 · Дроби на числовой прямой</title>
+  <link rel="stylesheet" href="../shared.css">
+  <style>
+
+    body { background: #F5F0E8; min-height: 100vh; color: #1a1a1a; }
+
+    .col {
+      width: 100%; max-width: 960px; margin: 0 auto;
+      padding-left: 16px; padding-right: 16px;
+    }
+    @media (min-width: 600px) {
+      .col { max-width: none; width: min(100vw - 32px, 640px); }
+    }
+    @media (min-width: 1024px) {
+      .col { width: 960px; }
+    }
+
+    /* Топбар */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(245,240,232,0.97);
+      border-bottom: 1.5px solid #E0D8CC;
+      padding: 10px 16px;
+    }
+    .topbar-inner {
+      width: 100%; max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; gap: 10px;
+    }
+    @media (min-width: 600px) {
+      .topbar-inner { max-width: none; width: min(100vw - 32px, 640px); }
+    }
+    @media (min-width: 1024px) {
+      .topbar-inner { width: 960px; }
+    }
+    
+    
+    
+    
+
+    /* Секции */
+    .page { padding: 20px 0 60px; }
+    .sec { margin-bottom: 28px; }
+    .sec-title { display: flex; align-items: center; gap: 7px; margin-bottom: 12px; }
+    .sec-pill { display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 8px; border-radius: 50px; width: 100%; }
+    .sec-pill-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sec-pill-text { font-family: var(--font-main); font-size: 15px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+    .sp-learn { background: #EEEEFF; }
+    .sp-learn .sec-pill-icon { background: #D4D4F8; }
+    .sp-learn .sec-pill-text { color: #0D0C59; }
+    .sp-train { background: #FEFCE8; }
+    .sp-train .sec-pill-icon { background: #FEF08A; }
+    .sp-train .sec-pill-text { color: #713F12; }
+    .sp-err { background: #FFF1EC; }
+    .sp-err .sec-pill-icon { background: #FFD9CC; }
+    .sp-err .sec-pill-text { color: #7C2D12; }
+
+    /* Карточка */
+    .card { background: #fff; border: 1.5px solid #E0D8CC; border-radius: 16px; overflow: hidden; }
+
+    /* Hook */
+    .hook-card { background: #FFF8ED; border: 1.5px solid rgba(196,124,26,0.3); border-radius: 16px; overflow: hidden; }
+    .hook-text-wrap { padding: 16px 18px 18px; border-top: 2px solid #E0D8CC; }
+    
+    
+
+    /* Симуляция — числовая прямая */
+    .sim-top { background: #FFF8ED; padding: 16px 16px 12px; border-bottom: 1.5px solid #E0D8CC; }
+    .num-line-wrap {
+      width: 100%; overflow-x: auto; padding-bottom: 4px;
+    }
+    .num-line-svg-wrap {
+      min-width: 280px; min-height: 130px;
+    }
+    .sim-fraction-display {
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      padding: 10px 0 4px;
+    }
+    .sim-frac-big {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+    }
+    
+    .frac-l { width: 52px; height: 3px; background: #C47C1A; border-radius: 2px; }
+    
+    .sim-status { text-align: center; font-size: 15px; color: #888; font-style: italic; min-height: 22px; }
+    .sim-pos-badge {
+      display: inline-block; background: #FFF8ED; border: 1.5px solid rgba(196,124,26,0.3);
+      border-radius: 20px; padding: 4px 14px;
+      font-family: var(--font-main); font-size: 15px; font-weight: 700; color: #7A4A0A;
+    }
+
+    .sliders { padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
+    .slider-row { display: flex; flex-direction: column; gap: 6px; }
+    .slider-lbl { display: flex; justify-content: space-between; align-items: center; }
+    
+    
+    input[type=range] { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; background: #E0D8CC; outline: none; cursor: pointer; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: #C47C1A; box-shadow: 0 2px 8px rgba(196,124,26,0.4); cursor: pointer; }
+
+    .presets { padding: 0 16px 14px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .preset-btn {
+      background: #FFF8ED; border: 1.5px solid rgba(196,124,26,0.3);
+      border-radius: 50px; padding: 6px 16px;
+      font-family: var(--font-main); font-size: 15px; font-weight: 800; color: #7A4A0A;
+      cursor: pointer; transition: transform 0.12s, background 0.15s; -webkit-tap-highlight-color: transparent;
+    }
+    .preset-btn:active { transform: scale(0.92); background: #F5E8CC; }
+
+    /* Чек-вопрос */
+    .check-wrap { padding: 14px 16px; border-top: 1.5px solid #E0D8CC; }
+    
+    .check-opts { display: flex; flex-direction: column; gap: 8px; }
+    
+    
+    .check-opt.correct { background: #ECFDF5; border-color: #22C55E; color: #166534; pointer-events: none; }
+    .check-opt.wrong   { background: #FEF2F2; border-color: #F87171; color: #991B1B; }
+    .check-opt.dis     { pointer-events: none; opacity: 0.4; }
+    .check-fb { margin-top: 10px; padding: 10px 14px; border-radius: 10px; font-size: 15px; line-height: 1.5; font-weight: 600; display: none; }
+    .check-fb.ok  { background: #ECFDF5; color: #166534; display: block; font-size: 16px; }
+    .check-fb.err { background: #FEF2F2; color: #991B1B; display: block; font-size: 16px; }
+
+    /* Объяснение */
+    .expl-block { padding: 14px 16px; border-bottom: 1.5px solid #E0D8CC; }
+    .expl-block:last-child { border-bottom: none; }
+    
+    
+    .expl-t strong { font-weight: 800; color: #1a1a1a; }
+    .expl-alert { background: #FFF8ED; border-left: 3px solid #C47C1A; border-radius: 0 10px 10px 0; padding: 12px 14px; line-height: 1.6; color: #1a1a1a; }
+    .expl-alert strong { color: #7A4A0A; }
+
+    /* Опорный конспект */
+    
+    
+    
+    .cs-toggle.open .cs-toggle-icon { transform: rotate(180deg); }
+    .cs-body { display: none; margin-top: 8px; }
+    .cs-body.open { display: block; }
+    .cs-block { padding: 14px 16px; border-bottom: 1.5px solid #E0D8CC; }
+    .cs-block:last-child { border-bottom: none; }
+    
+    
+    .cs-text strong { color: #C47C1A; font-weight: 800; }
+    .cs-list { display: flex; flex-direction: column; gap: 7px; }
+    
+    
+    .cs-confusion { display: flex; flex-direction: column; gap: 8px; }
+    .cs-conf-row { background: #F5F0E8; border-radius: 10px; padding: 10px 12px; }
+    
+    
+
+    /* Глоссарий */
+    .gloss-list { display: flex; flex-direction: column; gap: 6px; }
+    .gloss-item { background: #fff; border: 1.5px solid #E0D8CC; border-radius: 12px; overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .gloss-head { padding: 13px 16px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    
+    
+    .gloss-item.open .gloss-arrow { transform: rotate(180deg); }
+    
+    .gloss-item.open .gloss-body { display: block; }
+    .gloss-body em { font-style: normal; font-weight: 700; color: #C47C1A; }
+
+    /* Sort-тренажёр */
+    .sort-wrap { padding: 16px; }
+    .sort-header { font-size: 19px; font-weight: 700; color: #555; margin-bottom: 12px; text-align: center; }
+    .sort-bank {
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+      min-height: 48px; border: 1.5px dashed #E0D8CC;
+      border-radius: 10px; padding: 10px; margin-bottom: 12px;
+    }
+    .sort-slots {
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+      min-height: 48px; margin-bottom: 10px;
+    }
+    .sort-slot {
+      width: 72px; height: 64px;
+      border: 1.5px dashed #C4B89A; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      background: #F5F0E8; font-size: 19px; color: #AAA098;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0; box-sizing: border-box;
+    }
+    .sort-slot.filled { background: #fff; border-color: #C47C1A; border-style: solid; }
+    .sort-chip {
+      background: #fff; border: 1.5px solid #E0D8CC;
+      border-radius: 10px; padding: 9px 14px;
+      font-size: 19px; font-weight: 600; color: #333;
+      cursor: pointer; transition: border-color 0.15s, background 0.15s, transform 0.12s;
+      -webkit-tap-highlight-color: transparent;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sort-chip:active { transform: scale(0.97); }
+    .sort-chip.sel { border-color: #C47C1A; background: #FFF8ED; }
+    .sort-chip.placed { opacity: 0; pointer-events: none; }
+    .sort-chip.correct-pos { border-color: #22C55E; background: #ECFDF5; color: #166534; pointer-events: none; }
+    .sort-chip.wrong-pos  { border-color: #F87171; background: #FEF2F2; color: #991B1B; }
+    .sort-fb { text-align: center; font-size: 19px; font-weight: 700; color: #AAA098; min-height: 20px; }
+    .sort-check-btn {
+      display: block; width: 100%; margin-top: 10px;
+      padding: 11px; background: #FFF8ED; border: 1.5px solid rgba(196,124,26,0.3);
+      border-radius: 10px; font-family: var(--font-main); font-size: 16px; font-weight: 800;
+      color: #7A4A0A; cursor: pointer; transition: background 0.15s, transform 0.12s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .sort-check-btn:active { transform: scale(0.97); background: #F5E8CC; }
+    .sort-reset-btn {
+      display: none; width: 100%; margin-top: 8px;
+      padding: 10px; background: #F5F0E8; border: 1.5px solid #E0D8CC;
+      border-radius: 10px; font-family: var(--font-main); font-size: 16px; font-weight: 700;
+      color: #888; cursor: pointer; -webkit-tap-highlight-color: transparent;
+    }
+    .match2-grid { display: flex; flex-direction: column; gap: 0; max-width: 640px; margin: 0 auto; }
+    .match2-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #E8E0D0; }
+    .match2-row:last-child { border-bottom: none; }
+    .match2-frac {
+      min-width: 56px; text-align: center; font-size: 19px; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .match2-opts { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; }
+    .match2-btn {
+      background: #F5F0E8; border: 1.5px solid #E0D8CC; border-radius: 8px;
+      padding: 7px 10px; font-family: var(--font-body); font-size: 16px; font-weight: 600;
+      color: #333; cursor: pointer; -webkit-tap-highlight-color: transparent;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .match2-btn.sel { border-color: #C47C1A; background: #FFF8ED; }
+    .sort-tab-bar {
+      display: flex; gap: 6px; margin-bottom: 14px;
+    }
+    .sort-tab {
+      flex: 1; padding: 8px 6px; background: #F5F0E8;
+      border: 1.5px solid #E0D8CC; border-radius: 8px;
+      font-family: var(--font-main); font-size: 16px; font-weight: 700;
+      color: #888; cursor: pointer; text-align: center;
+      transition: background 0.15s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .sort-tab.active { background: #FFF8ED; border-color: #C47C1A; color: #7A4A0A; }
+
+    /* Чтение */
+    
+    
+    .read-text p { margin-bottom: 12px; }
+    .read-text p:last-child { margin-bottom: 0; }
+    .read-qs { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 16px; }
+    
+    .read-opts { display: flex; flex-direction: column; gap: 6px; }
+    
+    .read-opt.correct { background: #ECFDF5; border-color: #22C55E; color: #166534; pointer-events: none; }
+    .read-opt.wrong   { background: #FEF2F2; border-color: #F87171; color: #991B1B; pointer-events: none; }
+    .read-opt.dis     { pointer-events: none; opacity: 0.4; }
+
+    /* Misconceptions */
+    .misc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .misc-card {
+      background: #fff; border: 1.5px solid #E0D8CC;
+      border-radius: 14px; overflow: hidden;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .misc-card.active { border-color: #C47C1A; box-shadow: 0 2px 14px rgba(196,124,26,0.18); }
+    .misc-ph { width: 100%; aspect-ratio: 3/2; background: #EDE6D8; border: 2px dashed #C4B89A; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px; box-sizing: border-box; }
+    .misc-ph-icon { font-size: 20px; opacity: 0.45; }
+    .misc-ph-desc { font-size: 11px; color: #8C7A60; font-weight: 600; text-align: center; line-height: 1.4; }
+    
+    .misc-panel { display: none; background: #fff; border: 1.5px solid #E0D8CC; border-radius: 14px; overflow: hidden; }
+    .misc-panel.open { display: block; }
+    .misc-panel-head { background: #FEF2F2; padding: 14px 16px; border-bottom: 1.5px solid #FECACA; display: flex; align-items: center; gap: 10px; }
+    .misc-panel-head-icon { flex-shrink: 0; }
+    
+    .misc-body  { padding: 14px 16px; }
+    
+    
+    
+
+    /* Запомни */
+    .remember-list { display: flex; flex-direction: column; gap: 7px; }
+    .remember-item { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; background: #fff; border: 1.5px solid #E0D8CC; border-radius: 10px; }
+    .remember-dot  { width: 7px; height: 7px; border-radius: 50%; background: #C47C1A; flex-shrink: 0; margin-top: 7px; }
+    
+    .remember-text strong { color: #1a1a1a; font-weight: 800; }
+
+    /* Проверь себя */
+    .selfcheck-list { display: flex; flex-direction: column; gap: 7px; }
+    
+    .selfcheck-num  { font-weight: 800; color: #AAA098; margin-right: 6px; }
+
+    /* Квиз */
+    .quiz-prog { display: flex; gap: 6px; margin-bottom: 14px; }
+    .quiz-dot  { flex: 1; height: 4px; border-radius: 2px; background: #E0D8CC; transition: background 0.3s; }
+    .quiz-dot.done    { background: #C47C1A; }
+    .quiz-dot.current { background: rgba(196,124,26,0.38); }
+    .quiz-dot.correct { background: #22C55E; }
+    .quiz-dot.wrong   { background: #F87171; }
+    .quiz-qw  { padding: 16px 16px 10px; }
+    
+    
+    .quiz-opts { padding: 0 16px 14px; display: flex; flex-direction: column; gap: 8px; }
+    
+    
+    .quiz-opt.correct { background: #ECFDF5; border-color: #22C55E; color: #166534; pointer-events: none; }
+    .quiz-opt.wrong   { background: #FEF2F2; border-color: #F87171; color: #991B1B; pointer-events: none; }
+    .quiz-opt.dis     { pointer-events: none; opacity: 0.32; }
+    
+    .quiz-explain.show { display: block; }
+    .quiz-explain.ok  { background: #ECFDF5; color: #166534; }
+    .quiz-explain.err { background: #FEF2F2; color: #991B1B; }
+    
+    
+
+    /* DYK */
+    .dyk-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .dyk-card  { background: #fff; border: 1.5px solid #E0D8CC; border-radius: 14px; overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: border-color 0.2s, box-shadow 0.2s; }
+    .dyk-card.active { border-color: #C47C1A; box-shadow: 0 2px 14px rgba(196,124,26,0.18); }
+    .dyk-card-body { padding: 10px 12px 12px; }
+    
+    .dyk-panel { display: none; background: #fff; border: 1.5px solid #C47C1A; border-radius: 14px; overflow: hidden; margin-bottom: 10px; }
+    .dyk-panel.open { display: block; }
+    .dyk-panel-head { background: #FFF8ED; padding: 14px 16px; border-bottom: 1.5px solid rgba(196,124,26,0.2); }
+
+
+    /* Заглушки */
+    .img-placeholder {
+      width: 100%; background: #EDE6D8; border: 2px dashed #C4B89A;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px; color: #8C7A60; font-family: var(--font-main);
+      text-align: center; padding: 20px 16px; box-sizing: border-box;
+    }
+    
+    
+    
+    .img-ph-16-7 { aspect-ratio: 16/7; }
+    .img-ph-3-2  { aspect-ratio: 3/2; }
+    .img-ph-16-6 { aspect-ratio: 16/6; }
+
+    /* Кнопка внизу */
+    .bottom-back { padding: 0 16px 48px; width: 100%; max-width: 960px; margin: 0 auto; }
+    @media (min-width: 600px) { .bottom-back { max-width: none; width: min(100vw - 32px, 640px); } }
+    @media (min-width: 1024px) { .bottom-back { width: 960px; } }
+    
+    
+
+    /* Экран завершения */
+    .finish-ov {
+      position: fixed; inset: 0; background: rgba(245,240,232,0.97);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.4s;
+    }
+    .finish-ov.show { opacity: 1; pointer-events: all; }
+    .finish-card {
+      background: #fff; border: 1.5px solid #E0D8CC;
+      border-radius: 24px; padding: 36px 28px; text-align: center; max-width: 320px; width: 90%;
+      transform: scale(0.75); transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .finish-ov.show .finish-card { transform: scale(1); }
+    
+    
+    
+    .finish-score strong { color: #16A34A; font-weight: 800; }
+    .finish-btns  { display: flex; flex-direction: column; gap: 8px; }
+    
+    
+    .finish-btn-pri { background: #C47C1A; color: #fff; }
+    .finish-btn-sec { background: #F5F0E8; color: #888; border: 1.5px solid #E0D8CC; }
+
+    /* Масштабирование */
+    @media (min-width: 600px) {
+      .sort-chip     { font-size: clamp(15px, 1.9vw, 18px); }
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    }
+
+    /* Инлайн-дробь */
+    .frac {
+      display: inline-grid;
+      grid-template-rows: 1fr auto 1fr;
+      align-items: center;
+      text-align: center;
+      vertical-align: middle;
+      margin: 0 2px;
+      line-height: 1;
+    }
+    .frac-n, .frac-d { font-size: 1em; line-height: 1.15; }
+    .frac-bar { border-top: 1.5px solid currentColor; width: 100%; min-width: 0.7em; }
+
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-badge">4</div>
+    <div class="topbar-title">Дроби на числовой прямой</div>
+    <a href="index.html" class="topbar-back">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      На плакат
+    </a>
+  </div>
+</div>
+
+<div class="page">
+<div class="col">
+
+  <!-- 1. HOOK -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="#0D0C59"><path d="M11.95 18q.525 0 .888-.363t.362-.887t-.362-.888t-.888-.362t-.887.363t-.363.887t.363.888t.887.362m.05 4q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m.1-12.3q.625 0 1.088.4t.462 1q0 .55-.337.975t-.763.8q-.575.5-1.012 1.1t-.438 1.35q0 .35.263.588t.612.237q.375 0 .638-.25t.337-.625q.1-.525.45-.937t.75-.788q.575-.55.988-1.2t.412-1.45q0-1.275-1.037-2.087T12.1 6q-.95 0-1.812.4T8.975 7.625q-.175.3-.112.638t.337.512q.35.2.725.125t.625-.425q.275-.375.688-.575t.862-.2"/></svg></div><span class="sec-pill-text">Подумай перед началом</span></div></div>
+    <div class="hook-card">
+      <img src="node4_img1.png" alt="Числовая прямая в тетради" style="width:100%;aspect-ratio:16/7;object-fit:cover;border-radius:10px 10px 0 0;display:block;">
+      <div class="hook-text-wrap">
+        <div class="hook-label">Вопрос</div>
+        <div class="hook-text">Между 0 и 1 на числовой прямой — бесконечно много точек. Это не фигура речи: между 0 и <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">2</span></span> есть <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">4</span></span>, между 0 и <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">4</span></span> есть <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">8</span></span>, и этот процесс никогда не заканчивается. Как на отрезке конечной длины умещается бесконечно много чисел?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. ЧЕК-ВОПРОС ДО СИМУЛЯЦИИ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="#0D0C59"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 17h-2v-2h2zm2.07-7.75-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25"/></svg></div><span class="sec-pill-text">Чек-вопрос — как думаешь?</span></div></div>
+    <div class="card">
+      <div style="padding:14px 16px;">
+        <img src="node4_img2.png" alt="Точка на числовой прямой — ближе к 0 или к 1?" style="width:100%;aspect-ratio:16/7;object-fit:cover;border-radius:8px;display:block;margin-bottom:12px;">
+        <div class="check-q" id="preCheckQ">На числовой прямой между 0 и 1 стоит точка. Это дробь <span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">5</span></span>. Как ты думаешь, где она находится — ближе к 0 или ближе к 1?</div>
+        <div class="check-opts" id="preCheckOpts"></div>
+        <div class="check-fb" id="preCheckFb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. СИМУЛЯЦИЯ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 512 512" fill="#0D0C59"><path fill-rule="evenodd" d="M421.935 90.066c2.286 2.287 5.356 7.973 4.013 21.398c-1.323 13.221-6.731 30.687-16.845 51.505a306 306 0 0 1-3.77 7.492v42.31c39.823-61.993 54.037-115.44 31.687-137.79c-22.529-22.528-76.652-7.907-139.277 32.646l20.879 12.054c10.535-6.46 20.717-12.073 30.411-16.783c20.817-10.114 38.283-15.522 51.504-16.845c13.425-1.343 19.112 1.727 21.398 4.013M405.333 341.54v-42.31c39.823 61.993 54.037 115.44 31.687 137.79c-22.536 22.536-76.689 7.897-139.341-32.687l20.877-12.053c10.559 6.477 20.763 12.104 30.477 16.823c20.817 10.114 38.283 15.522 51.505 16.845c13.424 1.343 19.111-1.727 21.397-4.013c2.287-2.287 5.357-7.973 4.013-21.398c-1.322-13.221-6.73-30.687-16.845-51.505a306 306 0 0 0-3.77-7.492m-211.888 50.74l20.876 12.053c-62.651 40.584-116.804 55.223-139.34 32.687c-22.35-22.35-8.136-75.795 31.686-137.788v42.31a309 309 0 0 0-3.769 7.49c-10.114 20.818-15.522 38.284-16.845 51.505c-1.343 13.425 1.727 19.111 4.013 21.398c2.287 2.286 7.973 5.356 21.398 4.013c13.221-1.323 30.687-6.731 51.505-16.845c9.713-4.719 19.917-10.346 30.476-16.823M74.981 74.981c-22.35 22.35-8.136 75.795 31.686 137.788v-42.311a308 308 0 0 1-3.769-7.489c-10.114-20.818-15.522-38.284-16.845-51.505c-1.343-13.425 1.727-19.111 4.013-21.398c2.287-2.286 7.973-5.356 21.398-4.013c13.221 1.323 30.687 6.73 51.505 16.845c9.693 4.709 19.874 10.322 30.41 16.782l20.878-12.054C151.633 67.074 97.51 52.453 74.981 74.981M256 108.16l128 73.901v147.801l-128 73.901l-128-73.901V182.06zm85.333 123.132v73.937l-64 36.95v-73.937zm-106.666 36.95v73.937l-64-36.95v-73.937zM256 231.291l-63.969-36.933L256 157.426l63.969 36.932z" clip-rule="evenodd"/></svg></div><span class="sec-pill-text">Симуляция — подвигай ползунок</span></div></div>
+    <div class="card">
+      <div class="sim-top">
+        <!-- Числовая прямая SVG -->
+        <div class="num-line-wrap">
+          <div class="num-line-svg-wrap" id="numLineSvgWrap"></div>
+        </div>
+        <!-- Крупное отображение текущей дроби -->
+        <div class="sim-fraction-display">
+          <div class="sim-frac-big">
+            <div class="sim-n" id="simNumBig">1</div>
+            <div class="frac-l" id="simFracBar"></div>
+            <div class="sim-d" id="simDenBig">2</div>
+          </div>
+        </div>
+        <div class="sim-status" id="simStatus"></div>
+      </div>
+      <div class="sliders">
+        <div class="slider-row">
+          <div class="slider-lbl">
+            <span class="slider-lbl-t">Делим на частей (знаменатель)</span>
+            <span class="slider-val" id="sliderDenVal">2</span>
+          </div>
+          <input type="range" id="simSliderDen" min="2" max="8" value="2" step="1" oninput="updateSim()">
+        </div>
+        <div class="slider-row">
+          <div class="slider-lbl">
+            <span class="slider-lbl-t">Отмечаем точку (числитель)</span>
+            <span class="slider-val" id="sliderNumVal">1</span>
+          </div>
+          <input type="range" id="simSliderNum" min="0" max="4" value="1" step="1" oninput="updateSim()">
+        </div>
+      </div>
+      <div class="presets">
+        <button class="preset-btn" onclick="setPreset(1,2)"><span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">2</span></span></button>
+        <button class="preset-btn" onclick="setPreset(1,4)"><span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">4</span></span></button>
+        <button class="preset-btn" onclick="setPreset(3,4)"><span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span></button>
+        <button class="preset-btn" onclick="setPreset(5,4)"><span class="frac"><span class="frac-n">5</span><span class="frac-bar"></span><span class="frac-d">4</span></span></button>
+      </div>
+      <div class="check-wrap">
+        <div class="check-q">Где на числовой прямой находится дробь <span class="frac"><span class="frac-n">2</span><span class="frac-bar"></span><span class="frac-d">5</span></span>?</div>
+        <div class="check-opts" id="checkOpts"></div>
+        <div class="check-fb" id="checkFb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. ОБЪЯСНЕНИЕ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="#0D0C59"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74c0-3.86-3.14-7-7-7m2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A5 5 0 0 1 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1"/></svg></div><span class="sec-pill-text">Главная идея</span></div></div>
+    <div class="card">
+      <div class="expl-block">
+        <div class="expl-lbl">Как это работает</div>
+        <div class="expl-t">Числовая прямая не пустая между целыми числами. Каждая дробь занимает <strong>точно своё место</strong>: знаменатель говорит, насколько мелкие части, числитель — сколько таких частей отсчитать от нуля.</div>
+      </div>
+      <div class="expl-block">
+        <div class="expl-lbl">Чем больше знаменатель — тем гуще точки</div>
+        <div class="expl-t">При знаменателе 2 между 0 и 1 есть одна точка — <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">2</span></span>. При знаменателе 8 — <strong>семь точек</strong>. Части мельче, точки теснее — но каждая стоит на своём месте.</div>
+      </div>
+      <div class="expl-block">
+        <div class="expl-lbl">Разные дроби — одна точка</div>
+        <div class="expl-t"><span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">2</span></span> и <span class="frac"><span class="frac-n">2</span><span class="frac-bar"></span><span class="frac-d">4</span></span> и <span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">6</span></span> — это одна и та же точка на прямой. <strong>Разная запись, одно число.</strong> Это подводит к теме основного свойства дроби.</div>
+      </div>
+      <div class="expl-block">
+        <div class="expl-lbl">Не путай</div>
+        <div class="expl-alert">Дробь с <strong>большим знаменателем</strong> кажется «больше» — там же большее число. На самом деле <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">8</span></span> стоит намного <strong>левее</strong> <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">2</span></span>: части мельче — значит их берём меньше.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. ОПОРНЫЙ КОНСПЕКТ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="#0D0C59"><path d="M5 3c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 2h14v14H5zm2 2v2h10V7zm0 4v2h10v-2zm0 4v2h7v-2z"/></svg></div><span class="sec-pill-text">Опорный конспект</span></div></div>
+    <button class="cs-toggle" id="csToggle" onclick="toggleCS()">
+      <span>Открыть — читай перед контрольной</span>
+      <span class="cs-toggle-icon">&#9662;</span>
+    </button>
+    <div class="cs-body card" id="csBody">
+      <div class="cs-block">
+        <div class="cs-lbl">Что это</div>
+        <div class="cs-text">Дробь — это координата точки на числовой прямой между целыми числами. Знаменатель делит единичный отрезок на части, числитель указывает, какую из них взять.</div>
+      </div>
+      <div class="cs-block">
+        <div class="cs-lbl">Главные факты</div>
+        <div class="cs-list">
+          <div class="cs-item">На числовой прямой числа расположены слева направо по возрастанию: левее = меньше</div>
+          <div class="cs-item">Дробь с меньшим числителем (при одном знаменателе) стоит левее — она меньше</div>
+          <div class="cs-item">Чем больше знаменатель — тем мельче части и теснее расположены точки дробей</div>
+          <div class="cs-item"><span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">2</span></span> и <span class="frac"><span class="frac-n">2</span><span class="frac-bar"></span><span class="frac-d">4</span></span> и <span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">6</span></span> — разные записи одной точки на прямой (равные дроби)</div>
+          <div class="cs-item">Между любыми двумя дробями всегда найдётся ещё одна — математики называют это «плотностью»</div>
+        </div>
+      </div>
+      <div class="cs-block">
+        <div class="cs-lbl">Не путать</div>
+        <div class="cs-confusion">
+          <div class="cs-conf-row">
+            <div class="cs-conf-wrong">«Большой знаменатель = большая дробь» — неверно</div>
+            <div class="cs-conf-right"><span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">8</span></span> стоит на прямой левее <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">2</span></span>, хотя 8 &gt; 2. Больший знаменатель = мельче части = меньше дробь.</div>
+          </div>
+          <div class="cs-conf-row">
+            <div class="cs-conf-wrong">«Разные дроби — разные точки» — неверно</div>
+            <div class="cs-conf-right"><span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">2</span></span> = <span class="frac"><span class="frac-n">2</span><span class="frac-bar"></span><span class="frac-d">4</span></span> = <span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">6</span></span> — одна и та же точка. Разная запись, одно число.</div>
+          </div>
+        </div>
+      </div>
+      <div class="cs-block">
+        <div class="cs-lbl">Приём для запоминания</div>
+        <div class="cs-hint">На прямой: левее = меньше. Если знаменатель растёт — точки уплотняются, каждая сдвигается ближе к нулю.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. ГЛОССАРИЙ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 256 256" fill="#0D0C59"><path d="M85.43 53.45a6 6 0 0 0-10.86 0l-64 136a6 6 0 1 0 10.86 5.11L38.63 158h82.74l17.2 36.55a6 6 0 1 0 10.86-5.11ZM44.28 146L80 70.09L115.72 146ZM200 98c-12.21 0-21.71 3.28-28.23 9.74a6 6 0 0 0 8.46 8.52c4.18-4.15 10.84-6.26 19.77-6.26c14.34 0 26 9.87 26 22v7.24a40.36 40.36 0 0 0-26-9.24c-20.95 0-38 15.25-38 34s17.05 34 38 34a40.36 40.36 0 0 0 26-9.24V192a6 6 0 0 0 12 0v-60c0-18.75-17-34-38-34m0 88c-14.34 0-26-9.87-26-22s11.66-22 26-22s26 9.87 26 22s-11.66 22-26 22"/></svg></div><span class="sec-pill-text">Глоссарий — тапни чтобы открыть</span></div></div>
+    <div class="gloss-list" id="glossList"></div>
+  </div>
+
+  <!-- 7. ТРЕНАЖЁР — SORT -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-train"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#854D0E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="7" height="7" rx="1"/><rect x="14" y="4" width="7" height="7" rx="1"/><rect x="3" y="15" width="7" height="7" rx="1"/><rect x="14" y="15" width="7" height="7" rx="1"/><path d="M10 7.5h4M10 18.5h4"/></svg></div><span class="sec-pill-text">Тренажёр — расставь по порядку</span></div></div>
+    <div class="card">
+      <div class="sort-wrap">
+        <div class="sort-tab-bar">
+          <button class="sort-tab active" id="sortTab0" onclick="switchSort(0)">Задание 1</button>
+          <button class="sort-tab" id="sortTab1" onclick="switchSort(1)">Задание 2</button>
+        </div>
+        <div id="sortContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. ЧТЕНИЕ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0D0C59" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="M11 16.5s1.5.5 2.25 2.5c0 0 3.573-5.833 6.75-7"/><path d="M4 5h14M4 10h11M4 15h4"/></svg></div><span class="sec-pill-text">Читай и отвечай</span></div></div>
+    <div class="card">
+      <div class="read-tag">Числовая прямая в математике</div>
+      <img src="node4_img3.png" alt="Учитель у доски с числовой прямой" style="width:100%;display:block;">
+      <div class="read-text">
+        <p>Числовая прямая — один из самых полезных инструментов математики. Благодаря ей числа перестают быть просто символами: каждое число занимает своё строгое место на прямой.</p>
+        <p>Главное правило: чем правее точка, тем больше число. Это работает и для целых чисел, и для дробей. Например, <span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span> стоит правее <span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">4</span></span> — значит, <span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span> больше.</p>
+        <p>Чтобы найти точку дроби, нужно разделить отрезок от 0 до 1 на столько равных частей, сколько говорит знаменатель, и отсчитать нужное количество частей от нуля. Дробь <span class="frac"><span class="frac-n">2</span><span class="frac-bar"></span><span class="frac-d">5</span></span> — значит, делим на 5 частей и берём 2.</p>
+      </div>
+      <div class="read-qs" id="readQs"></div>
+    </div>
+  </div>
+
+  <!-- 9. MISCONCEPTIONS -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-err"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9A3412" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 21h20L12 3z"/><path d="M12 10v4M12 17v.5"/></svg></div><span class="sec-pill-text">Так часто думают — но это неверно</span></div></div>
+    <div class="misc-grid" id="miscGrid"></div>
+    <div class="misc-panel" id="miscPanel"></div>
+  </div>
+
+  <!-- 10. ЗАПОМНИ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-train"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#854D0E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18l7-4 7 4V3H5z"/></svg></div><span class="sec-pill-text">Запомни</span></div></div>
+    <div class="remember-list" id="rememberList"></div>
+  </div>
+
+  <!-- 11. ПРОВЕРЬ СЕБЯ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-train"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#854D0E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div><span class="sec-pill-text">Проверь себя</span></div></div>
+    <div class="selfcheck-list" id="selfcheckList"></div>
+  </div>
+
+  <!-- 12. ФИНАЛЬНЫЙ КВИЗ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-train"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#854D0E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3L4 14h7l-1 7 9-11h-7l1-7z"/></svg></div><span class="sec-pill-text">Финальный квиз</span></div></div>
+    <div class="quiz-prog" id="qProg"></div>
+    <div class="card" id="qCard"></div>
+  </div>
+
+  <!-- 13. DYK -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 56 56" fill="#0D0C59"><path d="M28 51.906c13.055 0 23.906-10.828 23.906-23.906c0-13.055-10.875-23.906-23.93-23.906C14.899 4.094 4.095 14.945 4.095 28c0 13.078 10.828 23.906 23.906 23.906m0-3.984C16.937 47.922 8.1 39.062 8.1 28c0-11.04 8.813-19.922 19.876-19.922c11.039 0 19.921 8.883 19.945 19.922c.023 11.063-8.883 19.922-19.922 19.922m-.023-15.68c1.124 0 1.757-.633 1.78-1.851l.352-12.375c.024-1.196-.914-2.086-2.156-2.086c-1.266 0-2.156.867-2.133 2.062l.305 12.399c.023 1.195.68 1.851 1.852 1.851m0 7.617c1.335 0 2.53-1.078 2.53-2.437c0-1.383-1.171-2.438-2.53-2.438c-1.383 0-2.532 1.078-2.532 2.438c0 1.336 1.172 2.437 2.532 2.437"/></svg></div><span class="sec-pill-text">Знаешь ли ты что...</span></div></div>
+    <div class="dyk-grid" id="dykGrid"></div>
+    <div class="dyk-panel" id="dykPanel"></div>
+  </div>
+
+</div>
+</div>
+
+<div class="bottom-back">
+  <a href="index.html" class="back-to-poster">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    На плакат
+  </a>
+</div>
+
+<div class="finish-ov" id="finOv">
+  <div class="finish-card">
+    <div class="finish-icon">&#10003;</div>
+    <div class="finish-title">Тема пройдена!</div>
+    <div class="finish-score">Квиз: <strong id="finScore">5 из 5</strong></div>
+    <div class="finish-btns">
+      <a href="index.html" class="finish-btn finish-btn-sec">На плакат</a>
+      <button class="finish-btn finish-btn-pri" onclick="finStay()">Остаться в теме</button>
+    </div>
+  </div>
+</div>
+
+<script src="../shared.js"></script>
+<script>
+
+function fr(n, d) {
+  return '<span class="frac"><span class="frac-n">' + n + '</span><span class="frac-bar"></span><span class="frac-d">' + d + '</span></span>';
+}
+function fri(n, d) { return ' ' + fr(n, d) + ' '; }
+
+function shuffleArr(arr) {
+  var a = arr.slice(), i, j, t;
+  for (i = a.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+/* ── Симуляция — числовая прямая ── */
+function buildNumLine(num, den) {
+  var wrap = document.getElementById('numLineSvgWrap');
+  var w = Math.max(wrap.offsetWidth || 300, 260);
+  var h = 160;
+  var PAD_L = 32, PAD_R = 60;
+  var lineY = 100;
+  var lineW = w - PAD_L - PAD_R;
+  var totalRange = 2;
+
+  function xPos(val) {
+    return PAD_L + (val / totalRange) * lineW;
+  }
+
+  var svg = '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" xmlns="http://www.w3.org/2000/svg">';
+
+  /* Линия */
+  var lineStart = xPos(0) - 14;
+  var lineEnd   = xPos(2) + 16;
+  svg += '<line x1="' + lineStart.toFixed(1) + '" y1="' + lineY + '" x2="' + lineEnd.toFixed(1) + '" y2="' + lineY + '" stroke="#C4B89A" stroke-width="4" stroke-linecap="round"/>';
+
+  /* Стрелка */
+  svg += '<polygon points="'
+    + (lineEnd + 14).toFixed(1) + ',' + lineY + ' '
+    + lineEnd.toFixed(1) + ',' + (lineY - 9) + ' '
+    + lineEnd.toFixed(1) + ',' + (lineY + 9)
+    + '" fill="#C4B89A"/>';
+
+  /* Риски знаменателя (кроме целых) */
+  var di, dv, dx, tickH;
+  for (di = 1; di < den * 2; di++) {
+    if (di % den === 0) continue;
+    dv = di / den;
+    if (dv > totalRange) break;
+    dx = xPos(dv);
+    tickH = 10;
+    svg += '<line x1="' + dx.toFixed(1) + '" y1="' + (lineY - tickH) + '" x2="' + dx.toFixed(1) + '" y2="' + (lineY + tickH) + '" stroke="#C4B89A" stroke-width="1.5" stroke-linecap="round"/>';
+  }
+
+  /* Целые числа — крупные риски + подписи */
+  var ci, cx;
+  for (ci = 0; ci <= 2; ci++) {
+    cx = xPos(ci);
+    svg += '<line x1="' + cx.toFixed(1) + '" y1="' + (lineY - 14) + '" x2="' + cx.toFixed(1) + '" y2="' + (lineY + 14) + '" stroke="#666" stroke-width="2.5" stroke-linecap="round"/>';
+    svg += '<text x="' + cx.toFixed(1) + '" y="' + (lineY + 36) + '" text-anchor="middle" font-family="Nunito,sans-serif" font-size="20" font-weight="800" fill="#333">' + ci + '</text>';
+  }
+
+  /* Точка */
+  var fval = den > 0 ? num / den : 0;
+  if (fval >= 0 && fval <= totalRange + 0.001) {
+    var px = xPos(Math.min(fval, totalRange));
+
+    /* Акцентная засечка под точкой */
+    svg += '<line x1="' + px.toFixed(1) + '" y1="' + (lineY - 11) + '" x2="' + px.toFixed(1) + '" y2="' + (lineY + 11) + '" stroke="#C47C1A" stroke-width="2.5" stroke-linecap="round"/>';
+
+    /* Ореол + точка */
+    svg += '<circle cx="' + px.toFixed(1) + '" cy="' + lineY + '" r="12" fill="rgba(196,124,26,0.15)"/>';
+    svg += '<circle cx="' + px.toFixed(1) + '" cy="' + lineY + '" r="7.5" fill="#C47C1A"/>';
+    svg += '<circle cx="' + px.toFixed(1) + '" cy="' + lineY + '" r="3" fill="#fff" opacity="0.55"/>';
+
+    /* Подпись над точкой */
+    if (num === 0) {
+      svg += '<text x="' + px.toFixed(1) + '" y="' + (lineY - 22) + '" text-anchor="middle" font-family="Nunito,sans-serif" font-size="22" font-weight="900" fill="#C47C1A">0</text>';
+    } else if (num % den === 0) {
+      svg += '<text x="' + px.toFixed(1) + '" y="' + (lineY - 22) + '" text-anchor="middle" font-family="Nunito,sans-serif" font-size="22" font-weight="900" fill="#C47C1A">' + Math.round(num / den) + '</text>';
+    } else {
+      /* Дробь над прямой. SVG y = baseline.
+         font-size 22px: cap-height ~16px, descender ~5px.
+         Числитель baseline: numY. Нижний край глифа: numY + 5.
+         Черта: numY + 9. Верхний край знаменателя: barY + 3.
+         Знаменатель baseline: barY + 3 + 16 = barY + 19. */
+      var nStr = '' + num;
+      var dStr = '' + den;
+      var barHalfW = Math.max(nStr.length, dStr.length) * 8 + 6;
+      var numY = lineY - 59;
+      var barY = lineY - 54;
+      var denY = lineY - 32;
+      svg += '<text x="' + px.toFixed(1) + '" y="' + numY + '" text-anchor="middle" font-family="Nunito,sans-serif" font-size="22" font-weight="900" fill="#C47C1A">' + nStr + '</text>';
+      svg += '<line x1="' + (px - barHalfW).toFixed(1) + '" y1="' + barY + '" x2="' + (px + barHalfW).toFixed(1) + '" y2="' + barY + '" stroke="#C47C1A" stroke-width="2" stroke-linecap="round"/>';
+      svg += '<text x="' + px.toFixed(1) + '" y="' + denY + '" text-anchor="middle" font-family="Nunito,sans-serif" font-size="22" font-weight="900" fill="#C47C1A">' + dStr + '</text>';
+    }
+  }
+
+  svg += '</svg>';
+  wrap.innerHTML = svg;
+}
+
+function posLabel(num, den) {
+  if (den === 0) return '';
+  var v = num / den;
+  var eps = 0.0001;
+  if (v < eps) return 'в точке 0';
+  if (Math.abs(v - 1) < eps) return 'ровно в точке 1';
+  if (Math.abs(v - 2) < eps) return 'ровно в точке 2';
+  if (Math.abs(v - 0.5) < eps) return 'между 0 и 1, ровно посередине';
+  if (Math.abs(v - 1.5) < eps) return 'между 1 и 2, ровно посередине';
+  if (v < 0.5) return 'между 0 и 1, ближе к 0';
+  if (v < 1)   return 'между 0 и 1, ближе к 1';
+  if (v < 1.5) return 'между 1 и 2, ближе к 1';
+  if (v < 2)   return 'между 1 и 2, ближе к 2';
+  return '';
+}
+
+function fracTypeLabel(num, den) {
+  if (num === 0) return '';
+  if (num % den === 0) return 'целое число';
+  if (num < den) return 'правильная дробь';
+  return 'неправильная дробь';
+}
+
+function updateSim() {
+  var denEl = document.getElementById('simSliderDen');
+  var numEl = document.getElementById('simSliderNum');
+  var den = parseInt(denEl.value, 10);
+  var maxNum = den * 2;
+  numEl.max = maxNum;
+  var num = parseInt(numEl.value, 10);
+  if (num > maxNum) { numEl.value = maxNum; num = maxNum; }
+
+  document.getElementById('sliderDenVal').textContent = den;
+  document.getElementById('sliderNumVal').textContent = num;
+
+  /* Крупная дробь */
+  document.getElementById('simNumBig').textContent = num;
+  document.getElementById('simDenBig').textContent = den;
+
+  /* Статус */
+  var pos = posLabel(num, den);
+  var type = fracTypeLabel(num, den);
+  document.getElementById('simStatus').textContent = pos + (type ? '\u00a0\u00b7\u00a0' + type : '');
+
+  buildNumLine(num, den);
+}
+
+function setPreset(num, den) {
+  document.getElementById('simSliderDen').value = den;
+  document.getElementById('simSliderNum').value = num;
+  updateSim();
+}
+
+/* ── Чек-вопрос до симуляции ── */
+var PRE_CHECK_OPTS = [
+  { text: 'Ближе к 1 — она больше половины', correct: true },
+  { text: 'Ближе к 0 — ведь 3 меньше 5', correct: false },
+  { text: 'Ровно посередине', correct: false },
+  { text: 'Правее 1', correct: false }
+];
+
+function initPreCheck() {
+  var opts = shuffleArr(PRE_CHECK_OPTS);
+  var container = document.getElementById('preCheckOpts');
+  var fb = document.getElementById('preCheckFb');
+  container.innerHTML = '';
+  fb.className = 'check-fb';
+  fb.innerHTML = '';
+  var i;
+  for (i = 0; i < opts.length; i++) {
+    (function(opt) {
+      var btn = document.createElement('button');
+      btn.className = 'check-opt';
+      btn.innerHTML = opt.text;
+      btn.setAttribute('data-correct', opt.correct ? 'true' : 'false');
+      btn.onclick = function() {
+        if (opt.correct) {
+          btn.className = 'check-opt correct';
+          fb.className = 'check-fb ok';
+          fb.innerHTML = 'Верно! Половина от пяти частей — это 2' + fr(1,2) + '. Числитель 3 больше 2' + fr(1,2) + ' — значит ' + fr(3,5) + ' больше половины и стоит ближе к 1.';
+        } else {
+          btn.classList.add('wrong');
+          fb.className = 'check-fb err';
+          fb.innerHTML = 'Подумай: половина пяти равных частей — это 2' + fr(1,2) + '. Числитель 3 больше или меньше 2' + fr(1,2) + '?';
+          setTimeout(function() {
+            btn.classList.remove('wrong');
+            fb.className = 'check-fb';
+            fb.innerHTML = '';
+          }, TIMING.wrongHint);
+        }
+      };
+      container.appendChild(btn);
+    })(opts[i]);
+  }
+}
+
+/* ── Чек-вопрос после симуляции ── */
+var CHECK_OPTS = [
+  { text: 'Между 0 и 1, ближе к 0', correct: true },
+  { text: 'Между 1 и 2', correct: false },
+  { text: 'Между 0 и 1, ближе к 1', correct: false },
+  { text: 'Ровно в точке 1', correct: false }
+];
+
+function initCheck() {
+  var opts = shuffleArr(CHECK_OPTS);
+  var container = document.getElementById('checkOpts');
+  var fb = document.getElementById('checkFb');
+  container.innerHTML = '';
+  fb.className = 'check-fb';
+  fb.innerHTML = '';
+  var i;
+  for (i = 0; i < opts.length; i++) {
+    (function(opt) {
+      var btn = document.createElement('button');
+      btn.className = 'check-opt';
+      btn.innerHTML = opt.text;
+      btn.setAttribute('data-correct', opt.correct ? 'true' : 'false');
+      btn.onclick = function() {
+        if (opt.correct) {
+          btn.className = 'check-opt correct';
+          fb.className = 'check-fb ok';
+          fb.innerHTML = 'Верно! ' + fr(2,5) + ' меньше ' + fr(1,2) + ', значит ближе к 0, чем к 1.';
+        } else {
+          btn.classList.add('wrong');
+          fb.className = 'check-fb err';
+          fb.innerHTML = fr(2,5) + ' — правильная дробь, она меньше 1. Числитель 2 меньше половины знаменателя (5 ÷ 2 = 2' + fr(1,2) + ') — значит дробь меньше ' + fr(1,2) + ' и ближе к 0.';
+          setTimeout(function() {
+            btn.classList.remove('wrong');
+            fb.className = 'check-fb';
+            fb.innerHTML = '';
+          }, TIMING.wrongHint);
+        }
+      };
+      container.appendChild(btn);
+    })(opts[i]);
+  }
+}
+
+/* ── Опорный конспект ── */
+function toggleCS() {
+  var btn  = document.getElementById('csToggle');
+  var body = document.getElementById('csBody');
+  if (body.className.indexOf('open') >= 0) {
+    body.className = 'cs-body card';
+    btn.className  = 'cs-toggle';
+  } else {
+    body.className = 'cs-body card open';
+    btn.className  = 'cs-toggle open';
+  }
+}
+
+/* ── Глоссарий ── */
+var GLOSSARY = [
+  { term: 'Числовая прямая',
+    def: 'Прямая линия, на которой каждой точке соответствует число. Точки идут слева направо по возрастанию. Пример: <em>0, ' + fr(1,2) + ', 1, ' + fr(3,2) + ', 2</em> — слева направо.' },
+  { term: 'Единичный отрезок',
+    def: 'Отрезок от 0 до 1 на числовой прямой. Его длина принята за единицу измерения. Знаменатель делит этот отрезок на равные части: при знаменателе <em>4</em> — на 4 части.' },
+  { term: 'Координата точки',
+    def: 'Число, показывающее положение точки на числовой прямой. Дробь — это координата точки между целыми числами. Пример: точка с координатой <em>' + fr(3,4) + '</em> находится на три четверти пути от 0 до 1.' },
+  { term: 'Упорядочить дроби',
+    def: 'Расставить дроби по возрастанию или убыванию. На числовой прямой — это порядок точек слева направо. Пример: <em>' + fr(1,4) + ' &lt; ' + fr(1,2) + ' &lt; ' + fr(3,4) + '</em>.' },
+  { term: 'Равные дроби',
+    def: 'Дроби, соответствующие одной и той же точке на числовой прямой. Пример: <em>' + fr(1,2) + ' = ' + fr(2,4) + ' = ' + fr(3,6) + '</em> — разные записи одного числа.' }
+];
+
+function initGlossary() {
+  var list = document.getElementById('glossList');
+  list.innerHTML = '';
+  var i;
+  for (i = 0; i < GLOSSARY.length; i++) {
+    (function(item) {
+      var el = document.createElement('div');
+      el.className = 'gloss-item';
+      el.innerHTML = '<div class="gloss-head"><span class="gloss-term">' + item.term + '</span><span class="gloss-arrow">&#9662;</span></div>'
+                   + '<div class="gloss-body">' + item.def + '</div>';
+      el.onclick = function() {
+        if (el.className.indexOf('open') >= 0) { el.className = 'gloss-item'; }
+        else { el.className = 'gloss-item open'; }
+      };
+      list.appendChild(el);
+    })(GLOSSARY[i]);
+  }
+}
+
+/* ── Sort-тренажёр ── */
+var SORT_TASKS = [
+  {
+    header: 'Расставь дроби от наименьшей к наибольшей: тапни дробь внизу, затем тапни нужный слот',
+    chips: [
+      { html: fr(1,4), val: 0.25 },
+      { html: fr(3,4), val: 0.75 },
+      { html: fr(1,2), val: 0.5  },
+      { html: fr(1,8), val: 0.125 },
+      { html: fr(5,8), val: 0.625 }
+    ]
+  }
+];
+
+/* Задание 2 — соответствие: дробь ↔ между какими целыми числами стоит */
+var MATCH2_PAIRS = [
+  { frac: fr(3,4),  left: '0', right: '1' },
+  { frac: fr(5,4),  left: '1', right: '2' },
+  { frac: fr(7,3),  left: '2', right: '3' },
+  { frac: fr(9,4),  left: '2', right: '3' },
+  { frac: fr(11,5), left: '2', right: '3' },
+  { frac: fr(13,6), left: '2', right: '3' }
+];
+/* Уникальные варианты для правой колонки */
+var MATCH2_OPTIONS = ['между 0 и 1', 'между 1 и 2', 'между 2 и 3', 'между 3 и 4'];
+var match2State = {}; /* frac_index → выбранный вариант */
+var match2Done = false;
+
+var sortCurTask  = 0;
+var sortSelected = null; /* { chip, origIndex } */
+var sortSlotData = [];   /* массив val или null */
+
+function switchSort(idx) {
+  sortCurTask = idx;
+  var tabs = document.getElementById('sortContainer').parentNode.parentNode;
+  var tab0 = document.getElementById('sortTab0');
+  var tab1 = document.getElementById('sortTab1');
+  tab0.className = (idx === 0) ? 'sort-tab active' : 'sort-tab';
+  tab1.className = (idx === 1) ? 'sort-tab active' : 'sort-tab';
+  renderSort();
+}
+
+function renderSort() {
+  var container = document.getElementById('sortContainer');
+  sortSelected = null;
+  sortSlotData = [];
+
+  if (sortCurTask === 1) { renderMatch2(); return; }
+
+  var task = SORT_TASKS[sortCurTask];
+  var i;
+  for (i = 0; i < task.chips.length; i++) { sortSlotData.push(null); }
+
+  var shuffled = shuffleArr(task.chips.slice());
+
+  var html = '<div class="sort-header">' + task.header + '</div>';
+
+  /* Слоты — зоны для расстановки */
+  html += '<div class="sort-slots" id="sortSlots">';
+  for (i = 0; i < task.chips.length; i++) {
+    html += '<div class="sort-slot" id="sortSlot' + i + '" data-idx="' + i + '" onclick="sortSlotTap(this)"><span style="font-size:15px;color:#CCC8BF">' + (i + 1) + '</span></div>';
+  }
+  html += '</div>';
+
+  /* Банк чипов */
+  html += '<div class="sort-bank" id="sortBank">';
+  for (i = 0; i < shuffled.length; i++) {
+    html += '<button class="sort-chip" data-origval="' + shuffled[i].val + '" onclick="sortChipTap(this)">' + shuffled[i].html + '</button>';
+  }
+  html += '</div>';
+
+  html += '<div class="sort-fb" id="sortFb"></div>';
+  html += '<button class="sort-check-btn" id="sortCheckBtn" onclick="sortCheck()">Проверить порядок</button>';
+  html += '<button class="sort-reset-btn" id="sortResetBtn" onclick="renderSort()">Попробовать снова</button>';
+
+  container.innerHTML = html;
+}
+
+function renderMatch2() {
+  var container = document.getElementById('sortContainer');
+  match2State = {};
+  match2Done = false;
+  var opts = MATCH2_OPTIONS; /* порядок фиксирован: 0-1, 1-2, 2-3, 3-4 */
+  var pairs = shuffleArr(MATCH2_PAIRS.slice()); /* перемешиваем только строки */
+  var html = '<div class="sort-header" style="margin-bottom:14px;">Выбери, между какими целыми числами стоит дробь на числовой прямой</div>';
+  html += '<div class="match2-grid">';
+  var i;
+  for (i = 0; i < pairs.length; i++) {
+    var p = pairs[i];
+    var correct = 'между ' + p.left + ' и ' + p.right;
+    html += '<div class="match2-row" data-correct="' + correct + '" data-idx="' + i + '">';
+    html += '<div class="match2-frac">' + p.frac + '</div>';
+    html += '<div class="match2-opts">';
+    var j;
+    for (j = 0; j < opts.length; j++) {
+      html += '<button class="match2-btn" onclick="match2Pick(this,' + i + ')">' + opts[j] + '</button>';
+    }
+    html += '</div></div>';
+  }
+  html += '</div>';
+  html += '<div class="sort-fb" id="sortFb" style="margin-top:12px;"></div>';
+  html += '<button class="sort-check-btn" id="sortCheckBtn" onclick="match2Check()">Проверить</button>';
+  html += '<button class="sort-reset-btn" id="sortResetBtn" onclick="renderMatch2()">Попробовать снова</button>';
+  container.innerHTML = html;
+}
+
+function match2Pick(btn, idx) {
+  if (match2Done) return;
+  var row = document.getElementById('sortContainer').querySelectorAll('.match2-row')[idx];
+  var btns = row.querySelectorAll('.match2-btn');
+  var i;
+  for (i = 0; i < btns.length; i++) { btns[i].classList.remove('sel'); }
+  btn.classList.add('sel');
+  match2State[idx] = btn.innerHTML;
+}
+
+function match2Check() {
+  if (match2Done) return;
+  var rows = document.getElementById('sortContainer').querySelectorAll('.match2-row');
+  var fb = document.getElementById('sortFb');
+  var correct = 0;
+  var i;
+  for (i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    var expected = row.getAttribute('data-correct');
+    var btns = row.querySelectorAll('.match2-btn');
+    var chosen = match2State[i];
+    var j;
+    for (j = 0; j < btns.length; j++) {
+      btns[j].style.pointerEvents = 'none';
+      if (btns[j].innerHTML === expected) {
+        btns[j].style.background = '#ECFDF5';
+        btns[j].style.borderColor = '#22C55E';
+        btns[j].style.color = '#166534';
+      } else if (btns[j].innerHTML === chosen && chosen !== expected) {
+        btns[j].style.background = '#FEF2F2';
+        btns[j].style.borderColor = '#F87171';
+        btns[j].style.color = '#991B1B';
+      }
+    }
+    if (chosen === expected) { correct++; }
+  }
+  match2Done = true;
+  if (correct === rows.length) {
+    fb.innerHTML = '&#10003; Отлично! Все дроби определены верно.';
+    fb.style.color = '#16A34A';
+  } else {
+    fb.innerHTML = correct + ' из ' + rows.length + ' верно. Правильные ответы выделены зелёным.';
+    fb.style.color = '#C47C1A';
+  }
+  document.getElementById('sortCheckBtn').style.display = 'none';
+  document.getElementById('sortResetBtn').style.display = 'block';
+}
+
+function sortChipTap(btn) {
+  var bank = document.getElementById('sortBank');
+  var chips = bank.querySelectorAll('.sort-chip');
+  var i;
+  /* Снять выделение если уже выбран этот */
+  if (sortSelected && sortSelected.el === btn) {
+    btn.classList.remove('sel');
+    sortSelected = null;
+    return;
+  }
+  /* Снять с предыдущего выделение */
+  for (i = 0; i < chips.length; i++) { chips[i].classList.remove('sel'); }
+  btn.classList.add('sel');
+  sortSelected = { el: btn, val: parseFloat(btn.getAttribute('data-origval')), fromSlot: false };
+}
+
+function sortSlotTap(slot) {
+  var idx = parseInt(slot.getAttribute('data-idx'), 10);
+
+  /* Если в слоте уже стоит чип и ничего не выбрано — забрать его обратно в банк */
+  if (!sortSelected && slot.className.indexOf('filled') >= 0) {
+    var val = sortSlotData[idx];
+    sortSlotData[idx] = null;
+    slot.className = 'sort-slot';
+    slot.innerHTML = '<span style="font-size: 15px;color:#CCC8BF">' + (idx + 1) + '</span>';
+    /* Вернуть чип в банк */
+    var task = SORT_TASKS[sortCurTask];
+    var i;
+    for (i = 0; i < task.chips.length; i++) {
+      if (task.chips[i].val === val) {
+        var bank = document.getElementById('sortBank');
+        var chips = bank.querySelectorAll('.sort-chip');
+        var k;
+        for (k = 0; k < chips.length; k++) {
+          if (parseFloat(chips[k].getAttribute('data-origval')) === val && chips[k].className.indexOf('placed') >= 0) {
+            chips[k].classList.remove('placed');
+            break;
+          }
+        }
+        break;
+      }
+    }
+    return;
+  }
+
+  if (!sortSelected) return;
+
+  /* Если слот занят — поменять местами (переставить обратно в банк) */
+  if (slot.className.indexOf('filled') >= 0) {
+    var prevVal = sortSlotData[idx];
+    /* Вернуть предыдущий в банк */
+    var bankEl = document.getElementById('sortBank');
+    var bankChips = bankEl.querySelectorAll('.sort-chip');
+    var bi;
+    for (bi = 0; bi < bankChips.length; bi++) {
+      if (parseFloat(bankChips[bi].getAttribute('data-origval')) === prevVal && bankChips[bi].className.indexOf('placed') >= 0) {
+        bankChips[bi].classList.remove('placed');
+        break;
+      }
+    }
+  }
+
+  /* Поставить выбранный чип в слот */
+  sortSlotData[idx] = sortSelected.val;
+  slot.className = 'sort-slot filled';
+
+  var task = SORT_TASKS[sortCurTask];
+  var fi;
+  for (fi = 0; fi < task.chips.length; fi++) {
+    if (task.chips[fi].val === sortSelected.val) {
+      slot.innerHTML = '<span style="display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-main);font-size:19px;font-weight:600;color:#333;pointer-events:none">' + task.chips[fi].html + '</span>';
+      break;
+    }
+  }
+
+  /* Скрыть чип из банка */
+  sortSelected.el.classList.add('placed');
+  sortSelected.el.classList.remove('sel');
+  sortSelected = null;
+}
+
+function sortCheck() {
+  var fb = document.getElementById('sortFb');
+  var i;
+
+  /* Проверить что все слоты заполнены */
+  for (i = 0; i < sortSlotData.length; i++) {
+    if (sortSlotData[i] === null) {
+      fb.innerHTML = 'Расставь все дроби по слотам, затем проверяй.';
+      fb.style.color = '#888';
+      return;
+    }
+  }
+
+  /* Проверить порядок возрастания */
+  var correct = true;
+  for (i = 0; i < sortSlotData.length - 1; i++) {
+    if (sortSlotData[i] >= sortSlotData[i + 1]) { correct = false; break; }
+  }
+
+  if (correct) {
+    fb.innerHTML = '&#10003; Верно! Дроби расставлены по возрастанию.';
+    fb.style.color = '#16A34A';
+    document.getElementById('sortCheckBtn').style.display = 'none';
+    document.getElementById('sortResetBtn').style.display = 'block';
+  } else {
+    fb.innerHTML = 'Не совсем. Вспомни: на числовой прямой левее стоит меньшее число. Попробуй снова.';
+    fb.style.color = '#B91C1C';
+    document.getElementById('sortResetBtn').style.display = 'block';
+  }
+}
+
+/* ── Чтение ── */
+var READ_QS = [
+  { q: 'Зачем была придумана числовая прямая?',
+    opts: [
+      { text: 'Рисовать красивые прямые', correct: false },
+      { text: 'Превратить числа в видимые точки в пространстве', correct: true },
+      { text: 'Складывать дроби', correct: false },
+      { text: 'Измерять длины отрезков', correct: false }
+    ]
+  },
+  { q: 'Как с помощью числовой прямой сравнивают числа?',
+    opts: [
+      { text: 'То что левее — больше', correct: false },
+      { text: 'То что левее — меньше', correct: true },
+      { text: 'Размер точки показывает размер числа', correct: false },
+      { text: 'Цвет точки показывает знак числа', correct: false }
+    ]
+  },
+  { q: 'Что означает «плотность» рациональных чисел?',
+    opts: [
+      { text: 'Числа расположены равномерно', correct: false },
+      { text: 'Между любыми двумя числами всегда найдётся ещё одно', correct: true },
+      { text: 'Дроби тяжелее целых чисел', correct: false },
+      { text: 'Числа расположены только в целых точках', correct: false }
+    ]
+  }
+];
+
+function initReadQuiz() {
+  var container = document.getElementById('readQs');
+  container.innerHTML = '';
+  var i;
+  for (i = 0; i < READ_QS.length; i++) {
+    (function(q) {
+      var block = document.createElement('div');
+      var qDiv = document.createElement('div');
+      qDiv.className = 'read-q-t';
+      qDiv.innerHTML = q.q;
+      block.appendChild(qDiv);
+      var optsDiv = document.createElement('div');
+      optsDiv.className = 'read-opts';
+      var shuffled = shuffleArr(q.opts);
+      var k;
+      for (k = 0; k < shuffled.length; k++) {
+        (function(opt) {
+          var btn = document.createElement('button');
+          btn.className = 'read-opt';
+          btn.innerHTML = opt.text;
+          btn.setAttribute('data-correct', opt.correct ? 'true' : 'false');
+          btn.onclick = function() {
+            var btns = optsDiv.querySelectorAll('.read-opt');
+            var m;
+            for (m = 0; m < btns.length; m++) { btns[m].style.pointerEvents = 'none'; }
+            if (opt.correct) {
+              btn.classList.add('correct');
+            } else {
+              btn.classList.add('wrong');
+              for (m = 0; m < btns.length; m++) {
+                if (btns[m].getAttribute('data-correct') === 'true') {
+                  btns[m].classList.add('correct');
+                }
+              }
+            }
+          };
+          optsDiv.appendChild(btn);
+        })(shuffled[k]);
+      }
+      block.appendChild(optsDiv);
+      container.appendChild(block);
+    })(READ_QS[i]);
+  }
+}
+
+/* ── Misconceptions ── */
+var MISCONCEPTIONS = [
+  {
+    imgDesc: 'Два отрезка одинаковой длины. Один разделён на 8 равных частей — одна закрашена. Другой разделён на 2 части — одна закрашена. Ребёнок показывает на первый: «здесь цифра 8, значит больше». Стрелка сравнения указывает наоборот.',
+    label: '«Большой знаменатель — большая дробь»?',
+    wrong: '«У ' + fr(1,8) + ' знаменатель 8, а у ' + fr(1,2) + ' всего 2. Значит ' + fr(1,8) + ' больше»',
+    whyWrong: 'Ребёнок видит большое число (8) и думает, что оно делает дробь большей — как в целых числах 8 &gt; 2.',
+    correct: 'На числовой прямой ' + fr(1,8) + ' стоит намного левее ' + fr(1,2) + '. Знаменатель 8 означает, что единица разделена на 8 мелких частей — каждая в 4 раза меньше, чем при знаменателе 2. Больший знаменатель = мельче части = дробь меньше.',
+    hint: 'Знаменатель — это дробитель. Чем больше делишь, тем мельче кусочки.'
+  },
+  {
+    imgDesc: 'Числовая прямая с делениями от 0 до 1. На ней одна точка. Слева от точки подпись «1/2», справа — «2/4». Ребёнок в раздумье смотрит на две подписи и думает, что это разные точки. Стрелка с вопросом указывает на единственную точку на прямой.',
+    label: '' + fr(1,2) + ' и ' + fr(2,4) + ' — разные точки?',
+    wrong: '«' + fr(1,2) + ' и ' + fr(2,4) + ' — разные дроби, значит разные точки на прямой»',
+    whyWrong: 'Ребёнок видит разные цифры и думает, что разная запись — это разное число, как 3 и 4 разные.',
+    correct: fr(1,2) + ' = ' + fr(2,4) + ' = ' + fr(3,6) + ' — это одно и то же число, одна точка на числовой прямой. Разные записи, одно значение. Как «половина пиццы» и «две четверти пиццы»: кусков разное количество, но еды одинаково.',
+    hint: 'Разная запись \u2260 разное число. Проверяй место на числовой прямой.'
+  }
+];
+
+var miscActive = -1;
+
+function initMisc() {
+  var grid = document.getElementById('miscGrid');
+  grid.innerHTML = '';
+  var i;
+  for (i = 0; i < MISCONCEPTIONS.length; i++) {
+    (function(m, idx) {
+      var card = document.createElement('div');
+      card.className = 'misc-card';
+      var imgSrcs = ['node4_img4.png', 'node4_img5.png'];
+      var imgHtml = '<img src="' + imgSrcs[idx] + '" alt="' + m.imgDesc + '" style="width:100%;aspect-ratio:3/2;object-fit:cover;display:block;">';
+      card.innerHTML = imgHtml + '<div class="misc-card-label">' + m.label + '</div>';
+      card.onclick = function() { miscTap(idx); };
+      grid.appendChild(card);
+    })(MISCONCEPTIONS[i], i);
+  }
+}
+
+function miscTap(idx) {
+  var grid  = document.getElementById('miscGrid');
+  var panel = document.getElementById('miscPanel');
+  var cards = grid.querySelectorAll('.misc-card');
+  var m = MISCONCEPTIONS[idx];
+  var i;
+
+  if (miscActive === idx) {
+    miscActive = -1;
+    for (i = 0; i < cards.length; i++) { cards[i].className = 'misc-card'; }
+    panel.className = 'misc-panel';
+    panel.innerHTML = '';
+    return;
+  }
+
+  miscActive = idx;
+  for (i = 0; i < cards.length; i++) { cards[i].className = 'misc-card'; }
+  cards[idx].className = 'misc-card active';
+
+  panel.className = 'misc-panel open';
+  var iconSVG = '<svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">'
+    + '<circle cx="11" cy="11" r="11" fill="#EF4444"/>'
+    + '<line x1="7" y1="7" x2="15" y2="15" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
+    + '<line x1="15" y1="7" x2="7" y2="15" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
+    + '</svg>';
+  panel.innerHTML = '<div class="misc-panel-head">'
+    + '<div class="misc-panel-head-icon">' + iconSVG + '</div>'
+    + '<div class="misc-wrong">' + m.wrong + '</div></div>'
+    + '<div class="misc-body">'
+    + '<div class="misc-why">' + m.whyWrong + '</div>'
+    + '<div class="misc-correct">' + m.correct + '</div>'
+    + '<div class="misc-hint">&#9989; ' + m.hint + '</div>'
+    + '</div>';
+}
+
+/* ── Запомни ── */
+var REMEMBER = [
+  '<strong>Левее = меньше</strong> на числовой прямой',
+  'Дробь — это координата точки между целыми числами',
+  '<strong>Больший знаменатель</strong> = мельче части = точки теснее = дробь меньше',
+  fr(1,2) + ' = ' + fr(2,4) + ' = ' + fr(3,6) + ' — одна точка, разные записи',
+  'Между любыми двумя дробями всегда найдётся ещё одна'
+];
+
+function initRemember() {
+  var list = document.getElementById('rememberList');
+  list.innerHTML = '';
+  var i;
+  for (i = 0; i < REMEMBER.length; i++) {
+    var item = document.createElement('div');
+    item.className = 'remember-item';
+    item.innerHTML = '<div class="remember-dot"></div><div class="remember-text">' + REMEMBER[i] + '</div>';
+    list.appendChild(item);
+  }
+}
+
+/* ── Проверь себя ── */
+var SELFCHECK = [
+  'Какая дробь больше — ' + fr(1,3) + ' или ' + fr(1,5) + '? Как проверить по числовой прямой?',
+  'Где находится дробь ' + fr(7,4) + ' — левее или правее 1?',
+  'Назови дробь, которая находится между ' + fr(1,2) + ' и 1.',
+  'Почему ' + fr(1,8) + ' меньше ' + fr(1,2) + ', если 8 &gt; 2?'
+];
+
+function initSelfcheck() {
+  var list = document.getElementById('selfcheckList');
+  list.innerHTML = '';
+  var i;
+  for (i = 0; i < SELFCHECK.length; i++) {
+    var item = document.createElement('div');
+    item.className = 'selfcheck-item';
+    item.innerHTML = '<span class="selfcheck-num">' + (i + 1) + '.</span>' + SELFCHECK[i];
+    list.appendChild(item);
+  }
+}
+
+/* ── Финальный квиз ── */
+var QUIZ_QS = [
+  { q: 'Какая из дробей расположена левее всех (наименьшая)?',
+    opts: [fr(3,4), fr(1,4), fr(7,8), fr(1,2)], c: 1,
+    explain: fr(1,4) + ' — наименьшее из четырёх: знаменатель 4, числитель всего 1.' },
+  { q: 'Дробь ' + fr(5,6) + ' находится...',
+    opts: ['Левее ' + fr(1,2), 'Правее 1', 'Между ' + fr(1,2) + ' и 1', 'Ровно в точке 1'], c: 2,
+    explain: fr(5,6) + ': числитель 5 больше половины знаменателя (3), значит больше ' + fr(1,2) + ' и меньше 1.' },
+  { q: 'Какие две дроби соответствуют одной точке на прямой?',
+    opts: [fr(1,2) + ' и ' + fr(1,3), fr(2,4) + ' и ' + fr(1,2), fr(3,4) + ' и ' + fr(2,3), fr(1,5) + ' и ' + fr(1,4)], c: 1,
+    explain: fr(2,4) + ' = ' + fr(1,2) + ' — одно число, одна точка на числовой прямой.' },
+  { q: 'Расставь по возрастанию: ' + fr(3,5) + ', ' + fr(1,5) + ', ' + fr(4,5) + ', ' + fr(2,5),
+    opts: [
+      fr(1,5) + ', ' + fr(2,5) + ', ' + fr(3,5) + ', ' + fr(4,5),
+      fr(4,5) + ', ' + fr(3,5) + ', ' + fr(2,5) + ', ' + fr(1,5),
+      fr(1,5) + ', ' + fr(3,5) + ', ' + fr(2,5) + ', ' + fr(4,5),
+      fr(2,5) + ', ' + fr(1,5) + ', ' + fr(4,5) + ', ' + fr(3,5)
+    ], c: 0,
+    explain: 'При одном знаменателе меньше та дробь, у которой меньше числитель.' },
+  { q: 'Между какими целыми числами находится дробь ' + fr(7,4) + '?',
+    opts: ['Между 0 и 1', 'Между 1 и 2', 'Между 2 и 3', 'Больше 3'], c: 1,
+    explain: fr(7,4) + ' = 1 и ' + fr(3,4) + ' — это больше 1 и меньше 2.' }
+];
+
+var qIdx      = 0;
+var qScore    = 0;
+var qAnswered = false;
+var qResults  = [];
+
+function initQuiz() {
+  qIdx      = 0;
+  qScore    = 0;
+  qResults  = [];
+  renderQuizProg();
+  renderQuizQ();
+}
+
+function renderQuizProg() {
+  var prog = document.getElementById('qProg');
+  prog.innerHTML = '';
+  var i;
+  for (i = 0; i < QUIZ_QS.length; i++) {
+    var dot = document.createElement('div');
+    if (i < qIdx) {
+      dot.className = 'quiz-dot ' + (qResults[i] ? 'correct' : 'wrong');
+    } else if (i === qIdx) {
+      dot.className = 'quiz-dot current';
+    } else {
+      dot.className = 'quiz-dot';
+    }
+    prog.appendChild(dot);
+  }
+}
+
+function renderQuizQ() {
+  if (qIdx >= QUIZ_QS.length) { showFinish(); return; }
+  qAnswered = false;
+  var q    = QUIZ_QS[qIdx];
+  var card = document.getElementById('qCard');
+  var shuffled = shuffleArr(q.opts.map(function(o, i) { return { text: o, correct: i === q.c }; }));
+  var optsHtml = '';
+  var i;
+  for (i = 0; i < shuffled.length; i++) {
+    optsHtml += '<button class="quiz-opt" data-correct="' + (shuffled[i].correct ? 'true' : 'false') + '" onclick="quizTap(this,' + qIdx + ')">' + shuffled[i].text + '</button>';
+  }
+  card.innerHTML = '<div class="quiz-qw"><div class="quiz-cnt">Вопрос ' + (qIdx + 1) + ' из ' + QUIZ_QS.length + '</div><div class="quiz-qt">' + q.q + '</div></div>'
+    + '<div class="quiz-opts">' + optsHtml + '</div>'
+    + '<div class="quiz-explain" id="qExpl"></div>'
+    + '<button class="quiz-next" id="qNext" onclick="quizNext()" style="display:none">' + (qIdx + 1 < QUIZ_QS.length ? 'Следующий вопрос \u2192' : 'Завершить \u2192') + '</button>';
+  renderQuizProg();
+}
+
+function quizTap(btn, qi) {
+  if (qAnswered) return;
+  qAnswered = true;
+  var correct = btn.getAttribute('data-correct') === 'true';
+  var card = document.getElementById('qCard');
+  var btns = card.querySelectorAll('.quiz-opt');
+  var k;
+  for (k = 0; k < btns.length; k++) { btns[k].style.pointerEvents = 'none'; }
+  if (correct) {
+    btn.classList.add('correct');
+    qScore++;
+  } else {
+    btn.classList.add('wrong');
+    for (k = 0; k < btns.length; k++) {
+      if (btns[k].getAttribute('data-correct') === 'true') { btns[k].classList.add('correct'); }
+    }
+  }
+  qResults[qi] = correct;
+  var dot = document.getElementById('qProg').children[qi];
+  if (dot) { dot.className = 'quiz-dot ' + (correct ? 'correct' : 'wrong'); }
+  var expl = document.getElementById('qExpl');
+  expl.className = 'quiz-explain show ' + (correct ? 'ok' : 'err');
+  expl.innerHTML = QUIZ_QS[qi].explain;
+  var nextBtn = document.getElementById('qNext');
+  if (nextBtn) { nextBtn.style.display = 'block'; }
+}
+
+function quizNext() {
+  qIdx++;
+  renderQuizProg();
+  renderQuizQ();
+}
+
+function showFinish() {
+  if (checkAnswered) { try { Progress.markDone('node4'); } catch(e) {} }
+  document.getElementById('finScore').innerHTML = qScore + ' из ' + QUIZ_QS.length;
+  var ov = document.getElementById('finOv');
+  ov.className = 'finish-ov show';
+  finRedirectTimer = setTimeout(function() {
+    try { location.href = 'index.html'; } catch(e) {}
+  }, 2500);
+}
+
+var finRedirectTimer = null;
+
+function finStay() {
+  if (finRedirectTimer) { clearTimeout(finRedirectTimer); finRedirectTimer = null; }
+  document.getElementById('finOv').className = 'finish-ov';
+}
+
+/* ── DYK ── */
+var DYK = [
+  {
+    tag: 'Наука',
+    title: 'На числовой прямой живут числа без дроби',
+    teaser: 'Корень из двух нельзя записать дробью — но его место на прямой точно известно.',
+    hasImg: true,
+    imgId: 'node4_img6',
+    imgDesc: 'Числовая прямая от 0 до 2. На ней отмечены точки: дроби 1/2, 1, 3/2 и между ними — точка без подписи-дроби, только символ √2. Стрелка указывает на эту точку с вопросом.',
+    text: '<p>Числовая прямая — не просто удобный рисунок. На ней живут не только дроби, но и числа, которые дробями не являются. Например, \u221A2 нельзя записать в виде ' + fr('a','b') + ', но на числовой прямой у него есть точное место: чуть правее 1,4.</p>'
+       + '<p>Такие числа называются иррациональными. Их бесконечно много — и все они тоже живут на этой же прямой, между дробями. Дроби, как ни много их, занимают не все точки.</p>'
+  },
+  {
+    tag: 'История',
+    title: 'Числовую прямую придумал Декарт',
+    teaser: 'Французский математик XVII века — и его имя до сих пор в каждом учебнике.',
+    hasImg: true,
+    imgId: 'node4_img7',
+    imgDesc: 'Рене Декарт за письменным столом. Перед ним раскрытая рукопись с чертежом: две перпендикулярные прямые, на которых расставлены числа. Декарт указывает пером на точку пересечения осей.',
+    text: '<p>Числовую прямую в привычном нам виде ввёл французский математик Рене Декарт в XVII веке. Он же придумал систему координат с двумя осями — горизонтальной и вертикальной. Именно поэтому координаты до сих пор называют «декартовыми».</p>'
+       + '<p>До Декарта числа существовали как абстрактные объекты. После него — стали точками в пространстве. Это изменило математику навсегда.</p>'
+  }
+];
+
+var dykActive = -1;
+var checkAnswered = false;
+
+function initDYK() {
+  var grid = document.getElementById('dykGrid');
+  grid.innerHTML = '';
+  var i;
+  for (i = 0; i < DYK.length; i++) {
+    (function(d, idx) {
+      var card = document.createElement('div');
+      card.className = 'dyk-card';
+      card.id = 'dykCard' + idx;
+      var imgHtml = d.hasImg
+        ? '<img src="' + d.imgId + '.png" alt="' + d.title + '" style="width:100%;aspect-ratio:3/2;object-fit:cover;display:block;border-radius:0;">'
+        : '<div class="img-placeholder img-ph-3-2" style="border-radius:0;border:none;background:#EDE6D8;">'
+          + '<div class="img-placeholder-icon">\uD83D\uDDBC</div>'
+          + '<div class="img-placeholder-id">' + d.imgId + ' \xb7 3:2</div>'
+          + '<div class="img-placeholder-desc" style="font-size:15px;">' + d.imgDesc + '</div>'
+          + '</div>';
+      card.innerHTML = imgHtml
+        + '<div class="dyk-card-body">'
+        + '<div class="dyk-tag">' + d.tag + '</div>'
+        + '<div class="dyk-title">' + d.title + '</div>'
+        + '</div>';
+      card.onclick = function() { dykTap(idx); };
+      grid.appendChild(card);
+    })(DYK[i], i);
+  }
+}
+
+function dykTap(idx) {
+  var grid  = document.getElementById('dykGrid');
+  var panel = document.getElementById('dykPanel');
+  var cards = grid.querySelectorAll('.dyk-card');
+  var d = DYK[idx];
+  var i;
+
+  if (dykActive === idx) {
+    dykActive = -1;
+    for (i = 0; i < cards.length; i++) { cards[i].className = 'dyk-card'; }
+    panel.className = 'dyk-panel';
+    panel.innerHTML = '';
+    return;
+  }
+
+  dykActive = idx;
+  for (i = 0; i < cards.length; i++) { cards[i].className = 'dyk-card'; }
+  cards[idx].className = 'dyk-card active';
+
+  panel.className = 'dyk-panel open';
+  panel.innerHTML = '<div class="dyk-panel-head"><div class="dyk-panel-tag">' + d.tag + '</div><div class="dyk-panel-title">' + d.title + '</div></div>'
+    + '<div class="dyk-panel-body"><p class="dyk-panel-teaser">' + d.teaser + '</p>' + d.text + '</div>';
+}
+
+/* ── Инициализация ── */
+updateSim();
+initPreCheck();
+initCheck();
+initGlossary();
+renderSort();
+initReadQuiz();
+initMisc();
+initRemember();
+initSelfcheck();
+initQuiz();
+initDYK();
+
+window.onresize = function() { updateSim(); };
+
+</script>
+</body>
+</html>

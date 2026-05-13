@@ -1,0 +1,376 @@
+/* ============================================================
+   БЛОК 5 · ЧТО ТАКОЕ ДРОБЬ? · Общие стили
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap');
+
+:root {
+  --c-bg:        #FFFDF5;
+  --c-surface:   #FFFFFF;
+  --c-border:    #E8E0D0;
+  --c-text:      #1a1a1a;
+  --c-text-2:    #666666;
+  --c-text-3:    #999999;
+
+  --c-node1:     #C47C1A;
+  --c-node1-bg:  #FFF8ED;
+  --c-node2:     #2B5FAD;
+  --c-node2-bg:  #F0F5FF;
+  --c-node3:     #C8860A;
+  --c-node3-bg:  #FFFBF0;
+  --c-node4:     #2E7D52;
+  --c-node4-bg:  #F0FBF5;
+
+  --c-done:      #22C55E;
+  --c-done-bg:   #DCFCE7;
+
+  --radius-sm:   8px;
+  --radius-md:   14px;
+  --radius-lg:   20px;
+
+  --shadow-sm:   0 2px 8px rgba(0,0,0,0.08);
+  --shadow-md:   0 4px 20px rgba(0,0,0,0.12);
+
+  --max-width:   960px;
+  --font-main:   'Nunito', sans-serif;
+  --font-body:   'Nunito Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--c-bg);
+  font-family: var(--font-body);
+  color: var(--c-text);
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ── Кнопка Назад ─────────────────────────────────────── */
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--c-surface);
+  border: 1.5px solid var(--c-border);
+  border-radius: 50px;
+  padding: 10px 18px;
+  font-family: var(--font-main);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--c-text);
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: var(--shadow-sm);
+}
+.back-btn:active { transform: scale(0.96); }
+.back-btn svg { flex-shrink: 0; }
+
+/* ── Верхняя навигация узла ───────────────────────────── */
+.node-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--c-bg);
+  border-bottom: 1.5px solid var(--c-border);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.node-topbar-title {
+  font-family: var(--font-main);
+  font-size: 14px;
+  font-weight: 800;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.node-badge {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 900;
+  color: #fff;
+}
+
+/* ── Контейнер страницы узла ──────────────────────────── */
+.node-page {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+}
+
+/* ── Секции узла ──────────────────────────────────────── */
+.section {
+  margin-bottom: 28px;
+}
+.section-title {
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-text-3);
+  margin-bottom: 12px;
+  padding-left: 2px;
+}
+
+/* ── Карточки контента ────────────────────────────────── */
+.content-card {
+  background: var(--c-surface);
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 10px;
+}
+
+/* ── Кнопки ───────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 22px;
+  font-family: var(--font-main);
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  width: 100%;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary {
+  background: var(--c-text);
+  color: #fff;
+}
+.btn-secondary {
+  background: var(--c-surface);
+  color: var(--c-text);
+  border: 1.5px solid var(--c-border);
+}
+
+/* ── Нижняя навигация узла ────────────────────────────── */
+.node-footer {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 16px 16px 32px;
+  border-top: 1.5px solid var(--c-border);
+  display: flex;
+  justify-content: center;
+}
+
+
+/* ── Общие стили узлов ───────────────────────────────── */
+.topbar-badge {
+      width: 32px; height: 32px; border-radius: 9px;
+      background: #C47C1A; color: #fff;
+      font-family: var(--font-main); font-size: 15px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
+.topbar-title {
+      font-family: var(--font-main); font-size: 16px; font-weight: 800;
+      color: #1a1a1a; flex: 1;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+.topbar-back {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #fff; border: 1.5px solid #E0D8CC;
+      border-radius: 50px; padding: 7px 14px;
+      font-family: var(--font-main); font-size: 15px; font-weight: 700;
+      color: #555; text-decoration: none;
+      transition: background 0.15s; -webkit-tap-highlight-color: transparent;
+    }
+
+.hook-label { font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #C47C1A; margin-bottom: 8px; }
+
+.hook-text  { font-size: 16px; line-height: 1.65; color: #3A2E22; font-weight: 600; }
+
+.sim-n { font-family: var(--font-main); font-size: 44px; font-weight: 900; color: #C47C1A; line-height: 1; }
+
+.sim-d { font-family: var(--font-main); font-size: 44px; font-weight: 900; color: #C47C1A; line-height: 1; }
+
+.slider-lbl-t { font-size: 15px; font-weight: 700; color: #888; }
+
+.slider-val   { font-family: var(--font-main); font-size: 17px; font-weight: 900; color: #C47C1A; min-width: 24px; text-align: right; }
+
+.check-q { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 10px; line-height: 1.55; }
+
+.check-opt {
+      background: #F5F0E8; border: 1.5px solid #E0D8CC;
+      border-radius: 10px; padding: 11px 14px;
+      font-family: var(--font-body); font-size: 16px; font-weight: 600; color: #333;
+      cursor: pointer; transition: border-color 0.15s, background 0.15s, transform 0.12s;
+      -webkit-tap-highlight-color: transparent; text-align: left;
+    }
+
+.expl-lbl { font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #C47C1A; margin-bottom: 6px; }
+
+.expl-t { font-size: 16px; line-height: 1.7; color: #444; }
+.expl-alert { background: #FFF8ED; border-left: 3px solid #C47C1A; border-radius: 0 10px 10px 0; padding: 12px 14px; font-size: 19px; line-height: 1.6; color: #1a1a1a; }
+
+.cs-toggle {
+      width: 100%; background: #fff; border: 1.5px solid #E0D8CC;
+      border-radius: 14px; padding: 16px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+      font-family: var(--font-main); font-size: 19px; font-weight: 800;
+      color: #1a1a1a; transition: background 0.15s;
+    }
+
+.cs-toggle-icon { font-size: 14px; color: #AAA098; transition: transform 0.25s; flex-shrink: 0; }
+
+.cs-lbl { font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #AAA098; margin-bottom: 8px; }
+
+.cs-text { font-size: 16px; line-height: 1.65; color: #333; }
+
+.cs-item { font-size: 16px; color: #444; line-height: 1.8; padding-left: 18px; position: relative; }
+.cs-item::before { content: '·'; position: absolute; left: 0; top: 0; color: #C47C1A; font-weight: 900; font-size: 28px; line-height: 1.35; }
+
+.cs-conf-wrong { font-size: 19px; color: #B91C1C; font-weight: 700; margin-bottom: 6px; }
+.cs-conf-right { font-size: 19px; color: #333; line-height: 1.5; }
+
+.cs-hint { background: #FFF8ED; border: 1.5px solid rgba(196,124,26,0.25); border-radius: 10px; padding: 12px 14px; font-size: 16px; color: #92400E; font-weight: 700; font-style: italic; }
+
+.gloss-term { font-family: var(--font-main); font-size: 19px; font-weight: 800; color: #1a1a1a; }
+
+.gloss-arrow { font-size: 14px; color: #AAA098; transition: transform 0.2s; flex-shrink: 0; }
+
+.gloss-body { display: none; padding: 12px 16px 14px; font-size: 15px; line-height: 1.65; color: #555; border-top: 1.5px solid #E0D8CC; }
+
+.match-item {
+      background: #F5F0E8; border: 1.5px solid #E0D8CC;
+      border-radius: 10px; padding: 10px 12px;
+      font-size: 15px; font-weight: 600; color: #333;
+      cursor: pointer; transition: border-color 0.15s, background 0.15s, transform 0.12s;
+      -webkit-tap-highlight-color: transparent; min-height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; line-height: 1.4; flex-grow: 1;
+    }
+
+.match-score { text-align: center; font-size: 15px; font-weight: 700; color: #AAA098; }
+
+.match-reset { display: none; margin: 8px auto 0; background: #F5F0E8; border: 1.5px solid #E0D8CC; border-radius: 50px; padding: 8px 20px; font-family: var(--font-main); font-size: 15px; font-weight: 700; color: #888; cursor: pointer; }
+
+.read-tag  { background: #FFF8ED; padding: 6px 14px; font-size: 14px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #C47C1A; border-bottom: 1.5px solid #E0D8CC; }
+
+.read-text { padding: 16px; font-size: 16px; line-height: 1.8; color: #444; }
+
+.read-q-t { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; line-height: 1.5; }
+
+.read-opt { background: #F5F0E8; border: 1.5px solid #E0D8CC; border-radius: 10px; padding: 9px 12px; font-family: var(--font-body); font-size: 15px; color: #444; cursor: pointer; transition: border-color 0.15s, background 0.15s; -webkit-tap-highlight-color: transparent; text-align: left; }
+
+.misc-card-label {
+      padding: 10px 12px 12px;
+      font-family: var(--font-main); font-size: 19px; font-weight: 800;
+      color: #1a1a1a; line-height: 1.35; text-align: center;
+    }
+
+.misc-wrong { font-size: 16px; font-weight: 800; color: #991B1B; line-height: 1.45; }
+
+.misc-why     { font-size: 15px; color: #888; font-style: italic; margin-bottom: 10px; line-height: 1.55; }
+
+.misc-correct { font-size: 16px; color: #333; line-height: 1.65; margin-bottom: 12px; }
+
+.misc-hint    { background: #ECFDF5; border-radius: 8px; padding: 10px 14px; font-size: 19px; color: #166534; font-weight: 700; }
+
+.remember-text { font-size: 16px; color: #333; line-height: 1.55; }
+
+.selfcheck-item { padding: 12px 14px; background: #fff; border: 1.5px solid #E0D8CC; border-radius: 10px; font-size: 16px; color: #444; line-height: 1.55; }
+
+.quiz-cnt { font-size: 12px; font-weight: 700; color: #AAA098; margin-bottom: 8px; letter-spacing: 0.06em; }
+
+.quiz-qt  { font-size: 17px; font-weight: 700; color: #1a1a1a; line-height: 1.55; }
+
+.quiz-opt { background: #F5F0E8; border: 1.5px solid #E0D8CC; border-radius: 10px; padding: 12px 14px; font-family: var(--font-body); font-size: 16px; font-weight: 600; color: #333; cursor: pointer; transition: border-color 0.15s, background 0.15s, transform 0.12s; -webkit-tap-highlight-color: transparent; text-align: left; display: flex; align-items: center; gap: 6px; }
+
+.quiz-explain { margin: 0 16px 0; padding: 10px 12px; border-radius: 10px; font-size: 15px; line-height: 1.55; display: none; }
+
+.quiz-next { display: none; margin: 10px 16px 14px; width: calc(100% - 32px); padding: 12px; background: #fff; border: 1.5px solid #E0D8CC; border-radius: 10px; font-family: var(--font-main); font-size: 15px; font-weight: 800; color: #555; cursor: pointer; transition: background 0.15s, transform 0.12s; -webkit-tap-highlight-color: transparent; }
+
+.dyk-tag   { font-size: 14px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #AAA098; margin-bottom: 4px; }
+
+.dyk-panel-tag   { font-size: 14px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #C47C1A; margin-bottom: 4px; }
+
+.dyk-title       { font-family: var(--font-main); font-size: 19px; font-weight: 800; color: #1a1a1a; line-height: 1.3; margin-bottom: 4px; }
+.dyk-panel-title { font-family: var(--font-main); font-size: 19px; font-weight: 800; color: #1a1a1a; line-height: 1.35; }
+.dyk-panel-body  { padding: 14px 16px; font-size: 19px; line-height: 1.75; color: #444; }
+.dyk-panel-body p { margin-bottom: 10px; }
+.dyk-panel-body p:last-child { margin-bottom: 0; }
+.dyk-panel-teaser { font-size: 15px; color: #888; font-style: italic; line-height: 1.5; margin-bottom: 14px; }
+
+.img-placeholder-icon { font-size: 28px; opacity: 0.5; }
+
+.img-placeholder-id { font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #AAA098; }
+
+.img-placeholder-desc { font-size: 15px; font-weight: 600; line-height: 1.55; max-width: 340px; }
+
+.back-to-poster {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: #fff; border: 1.5px solid #E0D8CC;
+      border-radius: 50px; padding: 14px 24px;
+      font-family: var(--font-main); font-size: 16px; font-weight: 800;
+      color: #555; text-decoration: none;
+      transition: background 0.15s, transform 0.12s; -webkit-tap-highlight-color: transparent;
+    }
+
+.finish-icon  { font-size: 48px; margin-bottom: 16px; }
+
+.finish-title { font-family: var(--font-main); font-size: 24px; font-weight: 900; color: #1a1a1a; margin-bottom: 8px; }
+
+.finish-score { font-size: 16px; color: #888; margin-bottom: 20px; }
+
+.finish-btn   { display: block; width: 100%; padding: 12px 16px; border-radius: 12px; font-family: var(--font-main); font-size: 15px; font-weight: 800; text-align: center; cursor: pointer; text-decoration: none; transition: transform 0.12s, background 0.15s; -webkit-tap-highlight-color: transparent; border: none; }
+/* ── Масштабирование шрифтов (планшет/десктоп) ───────────── */
+@media (min-width: 600px) {
+  .hook-label     { font-size: clamp(12px, 1.5vw, 14px); }
+  .sec-pill-text  { font-size: clamp(11px, 1.8vw, 13px); }
+  .hook-text      { font-size: clamp(16px, 2vw, 19px); }
+  .sim-n, .sim-d  { font-size: clamp(44px, 5vw, 48px); }
+  .slider-lbl-t   { font-size: clamp(14px, 1.7vw, 16px); }
+  .slider-val     { font-size: clamp(17px, 2.1vw, 21px); }
+  .check-q        { font-size: clamp(16px, 2vw, 19px); }
+  .check-opt      { font-size: clamp(16px, 2vw, 19px); }
+  .expl-lbl       { font-size: clamp(12px, 1.5vw, 14px); }
+  .expl-t         { font-size: clamp(16px, 2vw, 19px); }
+  .expl-alert     { font-size: clamp(16px, 2vw, 19px); }
+  .cs-toggle      { font-size: clamp(17px, 2.2vw, 19px); }
+  .cs-lbl         { font-size: clamp(12px, 1.5vw, 14px); }
+  .cs-text        { font-size: clamp(16px, 2vw, 19px); }
+  .cs-item        { font-size: clamp(16px, 2vw, 19px); }
+  .cs-conf-right  { font-size: clamp(16px, 2vw, 19px); }
+  .cs-hint        { font-size: clamp(16px, 2vw, 19px); }
+  .gloss-term     { font-size: 19px; }
+  .gloss-body     { font-size: clamp(15px, 1.9vw, 18px); }
+  .match-item     { font-size: clamp(15px, 1.9vw, 18px); }
+  .read-text      { font-size: clamp(16px, 2vw, 19px); }
+  .read-q-t       { font-size: clamp(16px, 2vw, 19px); }
+  .read-opt       { font-size: clamp(15px, 1.9vw, 18px); }
+  .misc-wrong     { font-size: clamp(16px, 2vw, 19px); }
+  .misc-why       { font-size: clamp(15px, 1.7vw, 16px); }
+  .misc-correct   { font-size: clamp(16px, 2vw, 19px); }
+  .misc-hint      { font-size: 19px; }
+  .misc-card-label { font-size: 19px; }
+  .remember-text  { font-size: clamp(16px, 2vw, 19px); }
+  .selfcheck-item { font-size: clamp(16px, 2vw, 19px); }
+  .quiz-cnt       { font-size: clamp(12px, 1.5vw, 14px); }
+  .quiz-qt        { font-size: clamp(17px, 2.1vw, 21px); }
+  .quiz-opt       { font-size: clamp(16px, 2vw, 19px); }
+  .quiz-explain   { font-size: clamp(15px, 1.9vw, 18px); }
+  .dyk-tag        { font-size: 14px; }
+  .dyk-panel-body { font-size: clamp(16px, 2vw, 19px); }
+}

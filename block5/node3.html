@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Узел 3 · Смешанные числа</title>
+  <link rel="stylesheet" href="../shared.css">
+  <style>
+
+    body { background: #F5F0E8; min-height: 100vh; color: #1a1a1a; }
+
+    .col {
+      width: 100%; max-width: 960px; margin: 0 auto;
+      padding-left: 16px; padding-right: 16px;
+    }
+    @media (min-width: 600px) {
+      .col { max-width: none; width: min(100vw - 32px, 640px); }
+    }
+    @media (min-width: 1024px) {
+      .col { width: 960px; }
+    }
+
+    /* Топбар */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(245,240,232,0.97);
+      border-bottom: 1.5px solid #E0D8CC;
+      padding: 10px 16px;
+    }
+    .topbar-inner {
+      width: 100%; max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; gap: 10px;
+    }
+    @media (min-width: 600px) {
+      .topbar-inner { max-width: none; width: min(100vw - 32px, 640px); }
+    }
+    @media (min-width: 1024px) {
+      .topbar-inner { width: 960px; }
+    }
+    
+    
+    
+    
+
+    /* Секции */
+    .page { padding: 20px 0 60px; }
+    .sec { margin-bottom: 28px; }
+    .sec-title { display: flex; align-items: center; gap: 7px; margin-bottom: 12px; }
+    .sec-pill { display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 8px; border-radius: 50px; width: 100%; }
+    .sec-pill-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sec-pill-text { font-family: var(--font-main); font-size: 15px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+    .sp-learn { background: #EEEEFF; }
+    .sp-learn .sec-pill-icon { background: #D4D4F8; }
+    .sp-learn .sec-pill-text { color: #0D0C59; }
+    .sp-train { background: #FEFCE8; }
+    .sp-train .sec-pill-icon { background: #FEF08A; }
+    .sp-train .sec-pill-text { color: #713F12; }
+    .sp-err { background: #FFF1EC; }
+    .sp-err .sec-pill-icon { background: #FFD9CC; }
+    .sp-err .sec-pill-text { color: #7C2D12; }
+
+    /* Карточка */
+    .card { background: #fff; border: 1.5px solid #E0D8CC; border-radius: 16px; overflow: hidden; }
+
+    /* Hook */
+    .hook-card { background: #FFF8ED; border: 1.5px solid rgba(196,124,26,0.3); border-radius: 16px; overflow: hidden; }
+    .hook-text-wrap { padding: 16px 18px 18px; border-top: 2px solid #E0D8CC; }
+    
+    
+
+    /* Симуляция */
+    .sim-top { background: #FFF8ED; padding: 20px 16px 16px; border-bottom: 1.5px solid #E0D8CC; }
+    .sim-layout { display: flex; flex-direction: column; gap: 16px; align-items: center; }
+    .sim-left  { width: 100%; display: flex; justify-content: center; align-items: center; }
+    .sim-right { width: 100%; display: flex; justify-content: center; }
+    @media (min-width: 640px) {
+      .sim-layout { flex-direction: row; align-items: center; gap: 24px; }
+      .sim-left  { width: 50%; justify-content: center; }
+      .sim-right { width: 50%; justify-content: flex-start; }
+    }
+    .pizzas-row { display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap; }
+    .pizza-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+    /* Дроби в симуляции */
+    .sim-fracs { display: flex; align-items: flex-start; justify-content: center; gap: 12px; flex-wrap: nowrap; }
+    .sim-frac-block { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .sim-frac-label { font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #AAA098; }
+    .sim-improp { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    
+    .frac-l { width: 52px; height: 3px; background: #C47C1A; border-radius: 2px; }
+    
+    .sim-mixed { display: flex; align-items: center; gap: 6px; }
+    .sim-whole { font-family: var(--font-main); font-size: 44px; font-weight: 900; color: #C47C1A; line-height: 1; }
+    .sim-mixed-frac { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .sim-mf-n { font-family: var(--font-main); font-size: 44px; font-weight: 900; color: #C47C1A; line-height: 1; }
+    .sim-mf-bar { width: 52px; height: 3px; background: #C47C1A; border-radius: 2px; }
+    .sim-mf-d { font-family: var(--font-main); font-size: 44px; font-weight: 900; color: #C47C1A; line-height: 1; }
+    .sim-eq { font-family: var(--font-main); font-size: 36px; font-weight: 900; color: #888; margin-top: 52px; align-self: flex-start; line-height: 1; }
+    .sim-word { text-align: center; font-size: 15px; color: #888; font-style: italic; min-height: 22px; }
+
+    .sliders { padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
+    .slider-row { display: flex; flex-direction: column; gap: 6px; }
+    .slider-lbl { display: flex; justify-content: space-between; align-items: center; }
+    
+    
+    input[type=range] { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; background: #E0D8CC; outline: none; cursor: pointer; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: #C47C1A; box-shadow: 0 2px 8px rgba(196,124,26,0.4); cursor: pointer; }
+
+    .presets { padding: 0 16px 14px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .preset-btn {
+      background: #FFF8ED; border: 1.5px solid rgba(196,124,26,0.3);
+      border-radius: 50px; padding: 6px 16px;
+      font-family: var(--font-main); font-size: 15px; font-weight: 800; color: #7A4A0A;
+      cursor: pointer; transition: transform 0.12s, background 0.15s; -webkit-tap-highlight-color: transparent;
+    }
+    .preset-btn:active { transform: scale(0.92); background: #F5E8CC; }
+
+    /* Чек-вопрос */
+    .check-wrap { padding: 14px 16px; border-top: 1.5px solid #E0D8CC; }
+    
+    .check-opts { display: flex; flex-direction: column; gap: 8px; }
+    
+    
+    .check-opt.correct { background: #ECFDF5; border-color: #22C55E; color: #166534; pointer-events: none; }
+    .check-opt.wrong   { background: #FEF2F2; border-color: #F87171; color: #991B1B; }
+    .check-opt.dis     { pointer-events: none; opacity: 0.4; }
+    .check-fb { margin-top: 10px; padding: 10px 14px; border-radius: 10px; font-size: 15px; line-height: 1.5; font-weight: 600; display: none; }
+    .check-fb.ok  { background: #ECFDF5; color: #166534; display: block; font-size: 16px; }
+    .check-fb.err { background: #FEF2F2; color: #991B1B; display: block; font-size: 16px; }
+
+    /* Объяснение */
+    .expl-block { padding: 14px 16px; border-bottom: 1.5px solid #E0D8CC; }
+    .expl-block:last-child { border-bottom: none; }
+    
+    
+    .expl-t strong { font-weight: 800; color: #1a1a1a; }
+    .expl-alert { background: #FFF8ED; border-left: 3px solid #C47C1A; border-radius: 0 10px 10px 0; padding: 12px 14px; line-height: 1.6; color: #1a1a1a; }
+    .expl-alert strong { color: #7A4A0A; }
+
+    /* Опорный конспект */
+    
+    
+    
+    .cs-toggle.open .cs-toggle-icon { transform: rotate(180deg); }
+    .cs-body { display: none; margin-top: 8px; }
+    .cs-body.open { display: block; }
+    .cs-block { padding: 14px 16px; border-bottom: 1.5px solid #E0D8CC; }
+    .cs-block:last-child { border-bottom: none; }
+    
+    
+    .cs-text strong { color: #C47C1A; font-weight: 800; }
+    .cs-list { display: flex; flex-direction: column; gap: 7px; }
+    
+    
+    .cs-confusion { display: flex; flex-direction: column; gap: 8px; }
+    .cs-conf-row { background: #F5F0E8; border-radius: 10px; padding: 10px 12px; }
+    
+    
+
+    /* Глоссарий */
+    .gloss-list { display: flex; flex-direction: column; gap: 6px; }
+    .gloss-item { background: #fff; border: 1.5px solid #E0D8CC; border-radius: 12px; overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .gloss-head { padding: 13px 16px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    
+    
+    .gloss-item.open .gloss-arrow { transform: rotate(180deg); }
+    
+    .gloss-item.open .gloss-body { display: block; }
+    .gloss-body em { font-style: normal; font-weight: 700; color: #C47C1A; }
+
+    /* Match */
+    .match-wrap { padding: 16px; }
+    .match-header { font-size: 19px; font-weight: 700; color: #555; margin-bottom: 12px; text-align: center; }
+    .match-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: stretch; margin-bottom: 10px; }
+    .match-col  { display: flex; flex-direction: column; gap: 6px; }
+    
+    
+    .match-item.sel  { border-color: #C47C1A; background: #FFF8ED; }
+    .match-item.done { border-color: #22C55E; background: #ECFDF5; color: #166534; pointer-events: none; }
+    .match-item.bad  { border-color: #F87171; background: #FEF2F2; animation: shake 0.35s; }
+    .match-item.dis  { opacity: 0.32; pointer-events: none; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+    
+    .match-score span { color: #16A34A; }
+    
+
+    /* Чтение */
+    
+    
+    .read-text p { margin-bottom: 12px; }
+    .read-text p:last-child { margin-bottom: 0; }
+    .read-qs { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 16px; }
+    
+    .read-opts { display: flex; flex-direction: column; gap: 6px; }
+    
+    .read-opt.correct { background: #ECFDF5; border-color: #22C55E; color: #166534; pointer-events: none; }
+    .read-opt.wrong   { background: #FEF2F2; border-color: #F87171; color: #991B1B; pointer-events: none; }
+    .read-opt.dis     { pointer-events: none; opacity: 0.4; }
+
+    /* Misconceptions */
+    .misc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .misc-card {
+      background: #fff; border: 1.5px solid #E0D8CC;
+      border-radius: 14px; overflow: hidden;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .misc-card.active { border-color: #C47C1A; box-shadow: 0 2px 14px rgba(196,124,26,0.18); }
+    .misc-ph { width: 100%; aspect-ratio: 3/2; background: #EDE6D8; border: 2px dashed #C4B89A; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px; box-sizing: border-box; }
+    .misc-ph-icon { font-size: 20px; opacity: 0.45; }
+    .misc-ph-desc { font-size: 11px; color: #8C7A60; font-weight: 600; text-align: center; line-height: 1.4; }
+    
+    .misc-panel { display: none; background: #fff; border: 1.5px solid #E0D8CC; border-radius: 14px; overflow: hidden; }
+    .misc-panel.open { display: block; }
+    .misc-panel-head { background: #FEF2F2; padding: 14px 16px; border-bottom: 1.5px solid #FECACA; display: flex; align-items: center; gap: 10px; }
+    .misc-panel-head-icon { flex-shrink: 0; }
+    
+    .misc-body  { padding: 14px 16px; }
+    
+    
+    
+
+    /* Запомни */
+    .remember-list { display: flex; flex-direction: column; gap: 7px; }
+    .remember-item { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; background: #fff; border: 1.5px solid #E0D8CC; border-radius: 10px; }
+    .remember-dot  { width: 7px; height: 7px; border-radius: 50%; background: #C47C1A; flex-shrink: 0; margin-top: 7px; }
+    
+    .remember-text strong { color: #1a1a1a; font-weight: 800; }
+
+    /* Проверь себя */
+    .selfcheck-list { display: flex; flex-direction: column; gap: 7px; }
+    
+    .selfcheck-num  { font-weight: 800; color: #AAA098; margin-right: 6px; }
+
+    /* Квиз */
+    .quiz-prog { display: flex; gap: 6px; margin-bottom: 14px; }
+    .quiz-dot  { flex: 1; height: 4px; border-radius: 2px; background: #E0D8CC; transition: background 0.3s; }
+    .quiz-dot.done    { background: #C47C1A; }
+    .quiz-dot.current { background: rgba(196,124,26,0.38); }
+    .quiz-dot.correct { background: #22C55E; }
+    .quiz-dot.wrong   { background: #F87171; }
+    .quiz-qw  { padding: 16px 16px 10px; }
+    
+    
+    .quiz-opts { padding: 0 16px 14px; display: flex; flex-direction: column; gap: 8px; }
+    
+    
+    .quiz-opt.correct { background: #ECFDF5; border-color: #22C55E; color: #166534; pointer-events: none; }
+    .quiz-opt.wrong   { background: #FEF2F2; border-color: #F87171; color: #991B1B; pointer-events: none; }
+    .quiz-opt.dis     { pointer-events: none; opacity: 0.32; }
+    
+    .quiz-explain.show { display: block; }
+    .quiz-explain.ok  { background: #ECFDF5; color: #166534; }
+    .quiz-explain.err { background: #FEF2F2; color: #991B1B; }
+    
+    
+
+    /* DYK */
+    .dyk-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .dyk-card  { background: #fff; border: 1.5px solid #E0D8CC; border-radius: 14px; overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: border-color 0.2s, box-shadow 0.2s; }
+    .dyk-card.active { border-color: #C47C1A; box-shadow: 0 2px 14px rgba(196,124,26,0.18); }
+    .dyk-card-body { padding: 10px 12px 12px; }
+    
+    .dyk-panel { display: none; background: #fff; border: 1.5px solid #C47C1A; border-radius: 14px; overflow: hidden; margin-bottom: 10px; }
+    .dyk-panel.open { display: block; }
+    .dyk-panel-head { background: #FFF8ED; padding: 14px 16px; border-bottom: 1.5px solid rgba(196,124,26,0.2); }
+
+    /* Заглушки */
+    .img-placeholder {
+      width: 100%; background: #EDE6D8; border: 2px dashed #C4B89A;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px; color: #8C7A60; font-family: var(--font-main);
+      text-align: center; padding: 20px 16px; box-sizing: border-box;
+    }
+    
+    
+    
+    .img-ph-16-7 { aspect-ratio: 16/7; }
+    .img-ph-3-2  { aspect-ratio: 3/2; }
+    .img-ph-16-6 { aspect-ratio: 16/6; }
+
+    /* Кнопка внизу */
+    .bottom-back { padding: 0 16px 48px; width: 100%; max-width: 960px; margin: 0 auto; }
+    @media (min-width: 600px) { .bottom-back { max-width: none; width: min(100vw - 32px, 640px); } }
+    @media (min-width: 1024px) { .bottom-back { width: 960px; } }
+    
+    
+
+    /* Экран завершения */
+    .finish-ov {
+      position: fixed; inset: 0; background: rgba(245,240,232,0.97);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.4s;
+    }
+    .finish-ov.show { opacity: 1; pointer-events: all; }
+    .finish-card {
+      background: #fff; border: 1.5px solid #E0D8CC;
+      border-radius: 24px; padding: 36px 28px; text-align: center; max-width: 320px; width: 90%;
+      transform: scale(0.75); transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .finish-ov.show .finish-card { transform: scale(1); }
+    
+    
+    
+    .finish-score strong { color: #16A34A; font-weight: 800; }
+    .finish-btns  { display: flex; flex-direction: column; gap: 8px; }
+    
+    
+    .finish-btn-pri { background: #C47C1A; color: #fff; }
+    .finish-btn-sec { background: #F5F0E8; color: #888; border: 1.5px solid #E0D8CC; }
+
+    /* Масштабирование */
+    @media (min-width: 600px) {
+      .sim-whole     { font-size: clamp(44px, 5vw, 48px); }
+      .sim-mf-n, .sim-mf-d { font-size: clamp(44px, 5vw, 48px); }
+      .sim-eq        { font-size: clamp(36px, 4vw, 40px); }
+    }
+
+    /* Инлайн-дробь */
+    .frac {
+      display: inline-grid;
+      grid-template-rows: 1fr auto 1fr;
+      align-items: center;
+      text-align: center;
+      vertical-align: middle;
+      margin: 0 2px;
+      line-height: 1;
+    }
+    .frac-n, .frac-d { font-size: 1em; line-height: 1.15; }
+    .frac-bar { border-top: 1.5px solid currentColor; width: 100%; min-width: 0.7em; }
+
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-badge">3</div>
+    <div class="topbar-title">Смешанные числа</div>
+    <a href="index.html" class="topbar-back">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      На плакат
+    </a>
+  </div>
+</div>
+
+<div class="page">
+<div class="col">
+
+  <!-- 1. HOOK -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="#0D0C59"><path d="M11.95 18q.525 0 .888-.363t.362-.887t-.362-.888t-.888-.362t-.887.363t-.363.887t.363.888t.887.362m.05 4q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m.1-12.3q.625 0 1.088.4t.462 1q0 .55-.337.975t-.763.8q-.575.5-1.012 1.1t-.438 1.35q0 .35.263.588t.612.237q.375 0 .638-.25t.337-.625q.1-.525.45-.937t.75-.788q.575-.55.988-1.2t.412-1.45q0-1.275-1.037-2.087T12.1 6q-.95 0-1.812.4T8.975 7.625q-.175.3-.112.638t.337.512q.35.2.725.125t.625-.425q.275-.375.688-.575t.862-.2"/></svg></div><span class="sec-pill-text">Подумай перед началом</span></div></div>
+    <div class="hook-card">
+      <img src="node3_img1.png" alt="Три пробирки с жидкостью" style="width:100%;aspect-ratio:16/7;object-fit:cover;border-radius:10px 10px 0 0;display:block;">
+      <div class="hook-text-wrap">
+        <div class="hook-label">Вопрос</div>
+        <div class="hook-text">В лаборатории три пробирки — в каждую входит ровно 4 мл раствора. Две полные, третья заполнена до третьего деления. Лаборант записал: <span class="frac"><span class="frac-n">11</span><span class="frac-bar"></span><span class="frac-d">4</span></span>&nbsp;— формально верно. Но коллега написал 2&thinsp;<span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span>&nbsp;— и сразу понятно, сколько целых пробирок. Одно количество, две записи. Почему удобнее иметь обе?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. ЧЕК-ВОПРОС ДО СИМУЛЯЦИИ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="#0D0C59"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 17h-2v-2h2zm2.07-7.75-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25"/></svg></div><span class="sec-pill-text">Чек-вопрос — как думаешь?</span></div></div>
+    <div class="card">
+      <div style="padding:14px 16px;">
+        <img src="node3_img2.png" alt="Три кувшина с лимонадом" style="width:100%;aspect-ratio:16/7;object-fit:cover;border-radius:8px;display:block;margin-bottom:12px;">
+        <div class="check-q" id="preCheckQ">Папа налил лимонад в кувшины и сказал: «Я заполнил их на <span class="frac"><span class="frac-n">11</span><span class="frac-bar"></span><span class="frac-d">4</span></span> кувшина». Как это записать в виде смешанного числа?</div>
+        <div class="check-opts" id="preCheckOpts"></div>
+        <div class="check-fb" id="preCheckFb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. СИМУЛЯЦИЯ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 512 512" fill="#0D0C59"><path fill-rule="evenodd" d="M421.935 90.066c2.286 2.287 5.356 7.973 4.013 21.398c-1.323 13.221-6.731 30.687-16.845 51.505a306 306 0 0 1-3.77 7.492v42.31c39.823-61.993 54.037-115.44 31.687-137.79c-22.529-22.528-76.652-7.907-139.277 32.646l20.879 12.054c10.535-6.46 20.717-12.073 30.411-16.783c20.817-10.114 38.283-15.522 51.504-16.845c13.425-1.343 19.112 1.727 21.398 4.013M405.333 341.54v-42.31c39.823 61.993 54.037 115.44 31.687 137.79c-22.536 22.536-76.689 7.897-139.341-32.687l20.877-12.053c10.559 6.477 20.763 12.104 30.477 16.823c20.817 10.114 38.283 15.522 51.505 16.845c13.424 1.343 19.111-1.727 21.397-4.013c2.287-2.287 5.357-7.973 4.013-21.398c-1.322-13.221-6.73-30.687-16.845-51.505a306 306 0 0 0-3.77-7.492m-211.888 50.74l20.876 12.053c-62.651 40.584-116.804 55.223-139.34 32.687c-22.35-22.35-8.136-75.795 31.686-137.788v42.31a309 309 0 0 0-3.769 7.49c-10.114 20.818-15.522 38.284-16.845 51.505c-1.343 13.425 1.727 19.111 4.013 21.398c2.287 2.286 7.973 5.356 21.398 4.013c13.221-1.323 30.687-6.731 51.505-16.845c9.713-4.719 19.917-10.346 30.476-16.823M74.981 74.981c-22.35 22.35-8.136 75.795 31.686 137.788v-42.311a308 308 0 0 1-3.769-7.489c-10.114-20.818-15.522-38.284-16.845-51.505c-1.343-13.425 1.727-19.111 4.013-21.398c2.287-2.286 7.973-5.356 21.398-4.013c13.221 1.323 30.687 6.73 51.505 16.845c9.693 4.709 19.874 10.322 30.41 16.782l20.878-12.054C151.633 67.074 97.51 52.453 74.981 74.981M256 108.16l128 73.901v147.801l-128 73.901l-128-73.901V182.06zm85.333 123.132v73.937l-64 36.95v-73.937zm-106.666 36.95v73.937l-64-36.95v-73.937zM256 231.291l-63.969-36.933L256 157.426l63.969 36.932z" clip-rule="evenodd"/></svg></div><span class="sec-pill-text">Симуляция — подвигай ползунок</span></div></div>
+    <div class="card">
+      <div class="sim-top">
+        <div class="sim-layout">
+          <div class="sim-left">
+            <div class="pizzas-row" id="pizzasRow"></div>
+          </div>
+          <div class="sim-right">
+            <div class="sim-fracs">
+              <div class="sim-frac-block">
+                <div class="sim-frac-label">Неправильная дробь</div>
+                <div class="sim-improp">
+                  <div class="sim-n" id="simNum">5</div>
+                  <div class="frac-l"></div>
+                  <div class="sim-d">4</div>
+                </div>
+              </div>
+              <div class="sim-eq">=</div>
+              <div class="sim-frac-block">
+                <div class="sim-frac-label" id="simLabel">Смешанное число</div>
+                <div class="sim-mixed">
+                  <div class="sim-whole" id="simWhole">1</div>
+                  <div class="sim-mixed-frac" id="simMixedFrac">
+                    <div class="sim-mf-n" id="simMfN">1</div>
+                    <div class="sim-mf-bar"></div>
+                    <div class="sim-mf-d">4</div>
+                  </div>
+                </div>
+                <div class="sim-word" id="simWord">одна целая и одна четвёртая</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sliders">
+        <div class="slider-row">
+          <div class="slider-lbl">
+            <span class="slider-lbl-t">Закрашено частей</span>
+            <span class="slider-val" id="sliderVal">5</span>
+          </div>
+          <input type="range" id="simSlider" min="1" max="11" value="5" step="1" oninput="updateSim(this.value)">
+        </div>
+      </div>
+      <div class="presets">
+        <button class="preset-btn" onclick="setSim(5)"><span class="frac"><span class="frac-n">5</span><span class="frac-bar"></span><span class="frac-d">4</span></span> = 1<span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">4</span></span></button>
+        <button class="preset-btn" onclick="setSim(7)"><span class="frac"><span class="frac-n">7</span><span class="frac-bar"></span><span class="frac-d">4</span></span> = 1<span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span></button>
+        <button class="preset-btn" onclick="setSim(9)"><span class="frac"><span class="frac-n">9</span><span class="frac-bar"></span><span class="frac-d">4</span></span> = 2<span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">4</span></span></button>
+        <button class="preset-btn" onclick="setSim(11)"><span class="frac"><span class="frac-n">11</span><span class="frac-bar"></span><span class="frac-d">4</span></span> = 2<span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span></button>
+      </div>
+      <div class="check-wrap">
+        <div class="check-q">Запиши дробь <span class="frac"><span class="frac-n">11</span><span class="frac-bar"></span><span class="frac-d">3</span></span> как смешанное число.</div>
+        <div class="check-opts" id="checkOpts"></div>
+        <div class="check-fb" id="checkFb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. ОБЪЯСНЕНИЕ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="#0D0C59"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74c0-3.86-3.14-7-7-7m2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A5 5 0 0 1 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1"/></svg></div><span class="sec-pill-text">Главная идея</span></div></div>
+    <div class="card">
+      <div class="expl-block">
+        <div class="expl-lbl">Как это работает</div>
+        <div class="expl-t">Неправильную дробь всегда можно записать как <strong>смешанное число</strong>&nbsp;— целую часть плюс правильную дробь. Делим числитель на знаменатель с остатком: частное становится целой частью, остаток&nbsp;— числителем дробной части.</div>
+      </div>
+      <div class="expl-block">
+        <div class="expl-lbl">Когда удобно смешанное число</div>
+        <div class="expl-t">Смешанное число сразу показывает, между какими целыми числами находится дробь. <span class="frac"><span class="frac-n">11</span><span class="frac-bar"></span><span class="frac-d">4</span></span>&nbsp;— непонятно, а 2&thinsp;<span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span>&nbsp;— сразу ясно: чуть меньше 3.</div>
+      </div>
+      <div class="expl-block">
+        <div class="expl-lbl">Когда удобна неправильная дробь</div>
+        <div class="expl-t">Неправильная дробь удобнее для <strong>вычислений</strong>: умножать и делить проще с ней. Поэтому оба вида нужны и равноправны.</div>
+      </div>
+      <div class="expl-block">
+        <div class="expl-lbl">Не путай</div>
+        <div class="expl-alert">Дети часто пишут «2 + <span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span>», думая что смешанное число&nbsp;— это сложение. На самом деле 2&thinsp;<span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span> именно это и означает, просто <strong>знак + не пишется</strong>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. ОПОРНЫЙ КОНСПЕКТ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="#0D0C59"><path d="M5 3c-1.11 0-2 .89-2 2v14c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 2h14v14H5zm2 2v2h10V7zm0 4v2h10v-2zm0 4v2h7v-2z"/></svg></div><span class="sec-pill-text">Опорный конспект</span></div></div>
+    <button class="cs-toggle" id="csToggle" onclick="toggleCS()">
+      <span>Открыть — читай перед контрольной</span>
+      <span class="cs-toggle-icon">&#9662;</span>
+    </button>
+    <div class="cs-body card" id="csBody">
+      <div class="cs-block">
+        <div class="cs-lbl">Что это</div>
+        <div class="cs-text">Смешанное число&nbsp;— запись неправильной дроби в виде целой части и правильной дроби. Например: <span class="frac"><span class="frac-n">11</span><span class="frac-bar"></span><span class="frac-d">4</span></span> = 2&thinsp;<span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span>.</div>
+      </div>
+      <div class="cs-block">
+        <div class="cs-lbl">Главные факты</div>
+        <div class="cs-list">
+          <div class="cs-item">Перевод в смешанное: числитель &divide; знаменатель с остатком. Частное&nbsp;— целая часть, остаток&nbsp;— числитель дробной части</div>
+          <div class="cs-item">Перевод обратно: целая &times; знаменатель + числитель. Например:<br>2&thinsp;<span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span> = <span class="frac"><span class="frac-n">2 &times; 4 + 3</span><span class="frac-bar"></span><span class="frac-d">4</span></span> = <span class="frac"><span class="frac-n">11</span><span class="frac-bar"></span><span class="frac-d">4</span></span></div>
+          <div class="cs-item">Смешанное число удобнее для понимания: сразу видно между какими целыми</div>
+          <div class="cs-item">Неправильная дробь удобнее для вычислений: умножать и делить проще</div>
+          <div class="cs-item">«Полтора» в русском языке&nbsp;— это смешанное число 1&thinsp;<span class="frac"><span class="frac-n">1</span><span class="frac-bar"></span><span class="frac-d">2</span></span></div>
+        </div>
+      </div>
+      <div class="cs-block">
+        <div class="cs-lbl">Не путать</div>
+        <div class="cs-confusion">
+          <div class="cs-conf-row">
+            <div class="cs-conf-wrong">«2&thinsp;<span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span> означает 2 умножить на <span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span>» — неверно</div>
+            <div class="cs-conf-right">2&thinsp;<span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span> = 2 + <span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span>. Знак плюс просто не пишется. Умножения нет.</div>
+          </div>
+          <div class="cs-conf-row">
+            <div class="cs-conf-wrong">«Смешанное и неправильная — разные числа» — неверно</div>
+            <div class="cs-conf-right">Это разные записи одного числа. <span class="frac"><span class="frac-n">11</span><span class="frac-bar"></span><span class="frac-d">4</span></span> и 2&thinsp;<span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span>&nbsp;— одна точка на числовой прямой.</div>
+          </div>
+        </div>
+      </div>
+      <div class="cs-block">
+        <div class="cs-lbl">Приём для запоминания</div>
+        <div class="cs-hint">Делим числитель на знаменатель: частное стоит впереди, остаток встаёт в числитель.<br>11 &divide; 4 = 2 (ост. 3) &rarr; 2&thinsp;<span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span>.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. ГЛОССАРИЙ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 256 256" fill="#0D0C59"><path d="M85.43 53.45a6 6 0 0 0-10.86 0l-64 136a6 6 0 1 0 10.86 5.11L38.63 158h82.74l17.2 36.55a6 6 0 1 0 10.86-5.11ZM44.28 146L80 70.09L115.72 146ZM200 98c-12.21 0-21.71 3.28-28.23 9.74a6 6 0 0 0 8.46 8.52c4.18-4.15 10.84-6.26 19.77-6.26c14.34 0 26 9.87 26 22v7.24a40.36 40.36 0 0 0-26-9.24c-20.95 0-38 15.25-38 34s17.05 34 38 34a40.36 40.36 0 0 0 26-9.24V192a6 6 0 0 0 12 0v-60c0-18.75-17-34-38-34m0 88c-14.34 0-26-9.87-26-22s11.66-22 26-22s26 9.87 26 22s-11.66 22-26 22"/></svg></div><span class="sec-pill-text">Глоссарий — тапни чтобы открыть</span></div></div>
+    <div class="gloss-list" id="glossList"></div>
+  </div>
+
+  <!-- 7. ТРЕНАЖЁР — MATCH -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-train"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#854D0E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="7" height="7" rx="1"/><rect x="14" y="4" width="7" height="7" rx="1"/><rect x="3" y="15" width="7" height="7" rx="1"/><rect x="14" y="15" width="7" height="7" rx="1"/><path d="M10 7.5h4M10 18.5h4"/></svg></div><span class="sec-pill-text">Тренажёр — установи соответствие</span></div></div>
+    <div class="card">
+      <div class="match-wrap">
+        <div class="match-header">Соедини неправильную дробь со смешанным числом</div>
+        <div class="match-cols" id="matchCols">
+          <div class="match-col" id="matchLeft"></div>
+          <div class="match-col" id="matchRight"></div>
+        </div>
+        <div class="match-score" id="matchScore"></div>
+        <button class="match-reset" id="matchReset" onclick="initMatch()">Ещё раз</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. ЧТЕНИЕ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0D0C59" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="M11 16.5s1.5.5 2.25 2.5c0 0 3.573-5.833 6.75-7"/><path d="M4 5h14M4 10h11M4 15h4"/></svg></div><span class="sec-pill-text">Читай и отвечай</span></div></div>
+    <div class="card">
+      <div class="read-tag">Смешанные числа в жизни</div>
+      <img src="node3_img3.png" alt="Рынок: продавец, строитель, кулинарная книга" style="width:100%;height:auto;border-radius:8px;display:block;margin-bottom:4px;">
+      <div class="read-text">
+        <p>В повседневной жизни мы часто используем смешанные числа, даже не задумываясь. Когда мама говорит «купи полтора килограмма яблок»&nbsp;— это смешанное число: 1 целый килограмм и ещё половина. Когда строитель говорит «отмерь два с четвертью метра»&nbsp;— тоже смешанное число.</p>
+        <p>Смешанные числа удобны потому что сразу показывают порядок величины. Услышав «<span class="frac"><span class="frac-n">17</span><span class="frac-bar"></span><span class="frac-d">6</span></span>», трудно сразу понять сколько это. А 2&thinsp;<span class="frac"><span class="frac-n">5</span><span class="frac-bar"></span><span class="frac-d">6</span></span>&nbsp;— понятно: немного меньше трёх.</p>
+        <p>В некоторых странах смешанные числа записывают иначе. В Германии и Франции принято писать дробную часть со знаком плюс: 2 + <span class="frac"><span class="frac-n">3</span><span class="frac-bar"></span><span class="frac-d">4</span></span>. В России целую часть пишут рядом с дробью без знака.</p>
+      </div>
+      <div class="read-qs" id="readQs"></div>
+    </div>
+  </div>
+
+  <!-- 9. MISCONCEPTIONS -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-err"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9A3412" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 21h20L12 3z"/><path d="M12 10v4M12 17v.5"/></svg></div><span class="sec-pill-text">Так часто думают — но это неверно</span></div></div>
+    <div class="misc-grid" id="miscGrid"></div>
+    <div class="misc-panel" id="miscPanel"></div>
+  </div>
+
+  <!-- 10. ЗАПОМНИ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-train"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#854D0E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18l7-4 7 4V3H5z"/></svg></div><span class="sec-pill-text">Запомни</span></div></div>
+    <div class="remember-list" id="rememberList"></div>
+  </div>
+
+  <!-- 11. ПРОВЕРЬ СЕБЯ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-train"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#854D0E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div><span class="sec-pill-text">Проверь себя</span></div></div>
+    <div class="selfcheck-list" id="selfcheckList"></div>
+  </div>
+
+  <!-- 12. ФИНАЛЬНЫЙ КВИЗ -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-train"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#854D0E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3L4 14h7l-1 7 9-11h-7l1-7z"/></svg></div><span class="sec-pill-text">Финальный квиз</span></div></div>
+    <div class="quiz-prog" id="qProg"></div>
+    <div class="card" id="qCard"></div>
+  </div>
+
+  <!-- 13. DYK -->
+  <div class="sec">
+    <div class="sec-title"><div class="sec-pill sp-learn"><div class="sec-pill-icon"><svg width="28" height="28" viewBox="0 0 56 56" fill="#0D0C59"><path d="M28 51.906c13.055 0 23.906-10.828 23.906-23.906c0-13.055-10.875-23.906-23.93-23.906C14.899 4.094 4.095 14.945 4.095 28c0 13.078 10.828 23.906 23.906 23.906m0-3.984C16.937 47.922 8.1 39.062 8.1 28c0-11.04 8.813-19.922 19.876-19.922c11.039 0 19.921 8.883 19.945 19.922c.023 11.063-8.883 19.922-19.922 19.922m-.023-15.68c1.124 0 1.757-.633 1.78-1.851l.352-12.375c.024-1.196-.914-2.086-2.156-2.086c-1.266 0-2.156.867-2.133 2.062l.305 12.399c.023 1.195.68 1.851 1.852 1.851m0 7.617c1.335 0 2.53-1.078 2.53-2.437c0-1.383-1.171-2.438-2.53-2.438c-1.383 0-2.532 1.078-2.532 2.438c0 1.336 1.172 2.437 2.532 2.437"/></svg></div><span class="sec-pill-text">Знаешь ли ты что...</span></div></div>
+    <div class="dyk-grid" id="dykGrid"></div>
+    <div class="dyk-panel" id="dykPanel"></div>
+  </div>
+
+</div>
+</div>
+
+<div class="bottom-back">
+  <a href="index.html" class="back-to-poster">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    На плакат
+  </a>
+</div>
+
+<div class="finish-ov" id="finOv">
+  <div class="finish-card">
+    <div class="finish-icon">&#10003;</div>
+    <div class="finish-title">Тема пройдена!</div>
+    <div class="finish-score">Квиз: <strong id="finScore">5 из 5</strong></div>
+    <div class="finish-btns">
+      <a href="index.html" class="finish-btn finish-btn-sec">На плакат</a>
+      <button class="finish-btn finish-btn-pri" onclick="finStay()">Остаться в теме</button>
+    </div>
+  </div>
+</div>
+
+<script src="../shared.js"></script>
+<script>
+
+function fr(n, d) {
+  return '<span class="frac"><span class="frac-n">' + n + '</span><span class="frac-bar"></span><span class="frac-d">' + d + '</span></span>';
+}
+function fri(n, d) { return ' ' + fr(n, d) + ' '; }
+
+function shuffleArr(arr) {
+  var a = arr.slice(), i, j, t;
+  for (i = a.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+/* ── Пиццы-SVG ── */
+function makePizzaSVG(slicesFilled, totalSlices, s) {
+  s = s || 80;
+  var cx = s / 2, cy = s / 2, r = s * 0.42;
+  var paths = '';
+  var i;
+  for (i = 0; i < totalSlices; i++) {
+    var startAngle = (i / totalSlices) * 2 * Math.PI - Math.PI / 2;
+    var endAngle   = ((i + 1) / totalSlices) * 2 * Math.PI - Math.PI / 2;
+    var x1 = cx + r * Math.cos(startAngle);
+    var y1 = cy + r * Math.sin(startAngle);
+    var x2 = cx + r * Math.cos(endAngle);
+    var y2 = cy + r * Math.sin(endAngle);
+    var filled = (i < slicesFilled);
+    var fill   = filled ? '#C47C1A' : '#E0D8CC';
+    paths += '<path d="M' + cx.toFixed(1) + ',' + cy.toFixed(1) + ' L' + x1.toFixed(1) + ',' + y1.toFixed(1)
+          + ' A' + r.toFixed(1) + ',' + r.toFixed(1) + ' 0 0,1 ' + x2.toFixed(1) + ',' + y2.toFixed(1)
+          + ' Z" fill="' + fill + '" stroke="#fff" stroke-width="2"/>';
+  }
+  return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 ' + s + ' ' + s + '" xmlns="http://www.w3.org/2000/svg">'
+       + '<circle cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" r="' + r.toFixed(1) + '" fill="#F5E6C8" stroke="#C4A87A" stroke-width="2"/>'
+       + paths
+       + '<circle cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" r="' + (r * 0.12).toFixed(1) + '" fill="#8B5E1A"/>'
+       + '</svg>';
+}
+
+function buildPizzas(num) {
+  var row = document.getElementById('pizzasRow');
+  row.innerHTML = '';
+  var DEN = 4;
+  var totalPizzas = 3;
+  var pizzaSize = window.innerWidth >= 640 ? 120 : 80;
+  var p;
+  for (p = 0; p < totalPizzas; p++) {
+    var filled = Math.min(Math.max(num - p * DEN, 0), DEN);
+    var wrap = document.createElement('div');
+    wrap.className = 'pizza-wrap';
+    wrap.innerHTML = makePizzaSVG(filled, DEN, pizzaSize);
+    row.appendChild(wrap);
+  }
+}
+
+/* ── Словесная запись ── */
+function simWord(num) {
+  var whole = Math.floor(num / 4);
+  var rem   = num % 4;
+  var wholeWords = ['', 'одна целая', 'две целых', 'три целых'];
+  var remWords   = ['', 'одна четвёртая', 'две четвёртых', 'три четвёртых'];
+  if (rem === 0) {
+    return (wholeWords[whole] || whole + ' целых') + ' (целое число)';
+  }
+  if (whole === 0) {
+    return remWords[rem] || rem + ' четвёртых';
+  }
+  return (wholeWords[whole] || whole + ' целых') + ' и ' + (remWords[rem] || rem + ' четвёртых');
+}
+
+/* ── Симуляция ── */
+function updateSim(val) {
+  val = parseInt(val, 10);
+  document.getElementById('sliderVal').textContent = val;
+  document.getElementById('simSlider').value = val;
+
+  var whole = Math.floor(val / 4);
+  var rem   = val % 4;
+
+  document.getElementById('simNum').textContent = val;
+
+  var wholeEl = document.getElementById('simWhole');
+  var fracEl  = document.getElementById('simMixedFrac');
+  var labelEl = document.getElementById('simLabel');
+
+  if (rem === 0) {
+    labelEl.textContent = 'Целое число';
+  } else {
+    labelEl.textContent = 'Смешанное число';
+  }
+
+  if (whole === 0) {
+    wholeEl.style.visibility = 'hidden';
+  } else {
+    wholeEl.style.visibility = '';
+    wholeEl.textContent = whole;
+  }
+
+  if (rem === 0) {
+    fracEl.style.visibility = 'hidden';
+  } else {
+    fracEl.style.visibility = '';
+    document.getElementById('simMfN').textContent = rem;
+  }
+
+  document.getElementById('simWord').textContent = simWord(val);
+  buildPizzas(val);
+}
+
+function setSim(val) { updateSim(val); }
+
+/* ── Чек-вопрос до симуляции ── */
+var PRE_CHECK_OPTS = [
+  { text: '2&thinsp;' + fr(3,4), correct: true },
+  { text: '3&thinsp;' + fr(1,4), correct: false },
+  { text: '2&thinsp;' + fr(1,4), correct: false },
+  { text: '1&thinsp;' + fr(3,4), correct: false }
+];
+
+function initPreCheck() {
+  var opts = shuffleArr(PRE_CHECK_OPTS);
+  var container = document.getElementById('preCheckOpts');
+  var fb = document.getElementById('preCheckFb');
+  container.innerHTML = '';
+  fb.className = 'check-fb';
+  fb.innerHTML = '';
+  var i;
+  for (i = 0; i < opts.length; i++) {
+    (function(opt) {
+      var btn = document.createElement('button');
+      btn.className = 'check-opt';
+      btn.innerHTML = opt.text;
+      btn.setAttribute('data-correct', opt.correct ? 'true' : 'false');
+      btn.onclick = function() {
+        var btns = container.querySelectorAll('.check-opt');
+        var k;
+        if (opt.correct) {
+          btn.className = 'check-opt correct';
+          fb.className = 'check-fb ok';
+          fb.innerHTML = '11 разделить на 4: получается 2 целых кувшина (8 четвертей) и ещё 3 четверти. Значит 2&thinsp;' + fr(3,4) + '.';
+        } else {
+          btn.classList.add('wrong');
+          fb.className = 'check-fb err';
+          fb.innerHTML = 'Раздели 11 на 4: сколько целых кувшинов получится и сколько четвертей останется?';
+          setTimeout(function() {
+            btn.classList.remove('wrong');
+            fb.className = 'check-fb';
+            fb.innerHTML = '';
+          }, TIMING.wrongHint);
+        }
+      };
+      container.appendChild(btn);
+    })(opts[i]);
+  }
+}
+
+/* ── Чек-вопрос после симуляции ── */
+var CHECK_OPTS = [
+  { text: '3' + fr(2,3), correct: true },
+  { text: '2' + fr(1,3), correct: false },
+  { text: '3' + fr(1,3), correct: false },
+  { text: '2' + fr(2,3), correct: false }
+];
+
+function initCheck() {
+  var opts = shuffleArr(CHECK_OPTS);
+  var container = document.getElementById('checkOpts');
+  var fb = document.getElementById('checkFb');
+  container.innerHTML = '';
+  fb.className = 'check-fb';
+  fb.innerHTML = '';
+  var i;
+  for (i = 0; i < opts.length; i++) {
+    (function(opt) {
+      var btn = document.createElement('button');
+      btn.className = 'check-opt';
+      btn.innerHTML = opt.text;
+      btn.setAttribute('data-correct', opt.correct ? 'true' : 'false');
+      btn.onclick = function() {
+        var btns = container.querySelectorAll('.check-opt');
+        var k;
+        if (opt.correct) {
+          btn.className = 'check-opt correct';
+          fb.className = 'check-fb ok';
+          fb.innerHTML = 'Точно! 11 = 3 &times; 3 + 2, значит ' + fr(11,3) + ' = 3&thinsp;' + fr(2,3) + '.';
+        } else {
+          btn.classList.add('wrong');
+          fb.className = 'check-fb err';
+          fb.innerHTML = 'Раздели 11 на 3: получишь 3 в частном и 2 в остатке.';
+          setTimeout(function() {
+            btn.classList.remove('wrong');
+            fb.className = 'check-fb';
+            fb.innerHTML = '';
+          }, TIMING.wrongHint);
+        }
+      };
+      container.appendChild(btn);
+    })(opts[i]);
+  }
+}
+
+/* ── Опорный конспект ── */
+function toggleCS() {
+  var btn  = document.getElementById('csToggle');
+  var body = document.getElementById('csBody');
+  if (body.className.indexOf('open') >= 0) {
+    body.className = 'cs-body card';
+    btn.className  = 'cs-toggle';
+  } else {
+    body.className = 'cs-body card open';
+    btn.className  = 'cs-toggle open';
+  }
+}
+
+/* ── Глоссарий ── */
+var GLOSSARY = [
+  { term: 'Смешанное число',
+    def: 'Число, состоящее из целой части и правильной дроби. Пример: <em>2&thinsp;' + fr(3,4) + '</em> — это 2 плюс три четверти.' },
+  { term: 'Целая часть',
+    def: 'Количество целых единиц в смешанном числе. В числе 3&thinsp;' + fr(1,5) + ' целая часть равна <em>3</em>.' },
+  { term: 'Дробная часть',
+    def: 'Правильная дробь, добавленная к целой части. В числе 3&thinsp;' + fr(1,5) + ' дробная часть равна <em>' + fr(1,5) + '</em>.' },
+  { term: 'Выделить целую часть',
+    def: 'Перевести неправильную дробь в смешанное число. Делим числитель на знаменатель с остатком:<br><em>11 &divide; 4 = 2 (ост. 3) &rarr; 2&thinsp;' + fr(3,4) + '</em>.' },
+  { term: 'Перевести в неправильную дробь',
+    def: 'Целая часть &times; знаменатель + числитель дробной.<br><em>2&thinsp;' + fr(3,4) + ' = <span class="frac"><span class="frac-n">2 &times; 4 + 3</span><span class="frac-bar"></span><span class="frac-d">4</span></span> = ' + fr(11,4) + '</em>.' }
+];
+
+function initGlossary() {
+  var list = document.getElementById('glossList');
+  list.innerHTML = '';
+  var i;
+  for (i = 0; i < GLOSSARY.length; i++) {
+    (function(item) {
+      var el = document.createElement('div');
+      el.className = 'gloss-item';
+      el.innerHTML = '<div class="gloss-head"><span class="gloss-term">' + item.term + '</span><span class="gloss-arrow">&#9662;</span></div>'
+                   + '<div class="gloss-body">' + item.def + '</div>';
+      el.onclick = function() {
+        if (el.className.indexOf('open') >= 0) { el.className = 'gloss-item'; }
+        else { el.className = 'gloss-item open'; }
+      };
+      list.appendChild(el);
+    })(GLOSSARY[i]);
+  }
+}
+
+/* ── Match ── */
+var MATCH_PAIRS = [
+  { left: fr(7,3),  right: '2&thinsp;' + fr(1,3), key: 0 },
+  { left: fr(10,3), right: '3&thinsp;' + fr(1,3), key: 1 },
+  { left: fr(8,3),  right: '2&thinsp;' + fr(2,3), key: 2 },
+  { left: fr(9,4),  right: '2&thinsp;' + fr(1,4), key: 3 },
+  { left: fr(11,4), right: '2&thinsp;' + fr(3,4), key: 4 },
+  { left: fr(13,4), right: '3&thinsp;' + fr(1,4), key: 5 }
+];
+
+var matchSel  = null;
+var matchDone = 0;
+
+function initMatch() {
+  matchSel  = null;
+  matchDone = 0;
+  var leftEl   = document.getElementById('matchLeft');
+  var rightEl  = document.getElementById('matchRight');
+  var scoreEl  = document.getElementById('matchScore');
+  var resetBtn = document.getElementById('matchReset');
+  leftEl.innerHTML  = '';
+  rightEl.innerHTML = '';
+  scoreEl.textContent = '';
+  resetBtn.style.display = 'none';
+
+  var leftItems  = shuffleArr(MATCH_PAIRS);
+  var rightItems = shuffleArr(MATCH_PAIRS.slice());
+  var i;
+
+  for (i = 0; i < leftItems.length; i++) {
+    (function(pair) {
+      var btn = document.createElement('button');
+      btn.className = 'match-item';
+      btn.innerHTML = pair.left;
+      btn.setAttribute('data-key', pair.key);
+      btn.setAttribute('data-side', 'left');
+      btn.onclick = function() { matchTap(btn); };
+      leftEl.appendChild(btn);
+    })(leftItems[i]);
+  }
+  for (i = 0; i < rightItems.length; i++) {
+    (function(pair) {
+      var btn = document.createElement('button');
+      btn.className = 'match-item';
+      btn.innerHTML = pair.right;
+      btn.setAttribute('data-key', pair.key);
+      btn.setAttribute('data-side', 'right');
+      btn.onclick = function() { matchTap(btn); };
+      rightEl.appendChild(btn);
+    })(rightItems[i]);
+  }
+}
+
+function matchTap(btn) {
+  if (btn.classList.contains('done') || btn.classList.contains('dis')) return;
+  if (!matchSel) {
+    matchSel = btn;
+    btn.classList.add('sel');
+    return;
+  }
+  if (matchSel === btn) {
+    btn.classList.remove('sel');
+    matchSel = null;
+    return;
+  }
+  if (matchSel.getAttribute('data-side') === btn.getAttribute('data-side')) {
+    matchSel.classList.remove('sel');
+    matchSel = btn;
+    btn.classList.add('sel');
+    return;
+  }
+  var a = matchSel, b = btn;
+  var ok = a.getAttribute('data-key') === b.getAttribute('data-key');
+  a.classList.remove('sel');
+  if (ok) {
+    a.classList.add('done');
+    b.classList.add('done');
+    matchDone++;
+    var scoreEl = document.getElementById('matchScore');
+    scoreEl.innerHTML = 'Пар найдено: <span>' + matchDone + '</span> из ' + MATCH_PAIRS.length;
+    if (matchDone === MATCH_PAIRS.length) {
+      document.getElementById('matchReset').style.display = 'block';
+    }
+  } else {
+    a.classList.add('bad');
+    b.classList.add('bad');
+    setTimeout(function() {
+      a.classList.remove('bad');
+      b.classList.remove('bad');
+    }, TIMING.matchShake);
+  }
+  matchSel = null;
+}
+
+/* ── Чтение ── */
+var READ_QS = [
+  { q: 'Что означает "полтора килограмма" как смешанное число?',
+    opts: [
+      { text: fr(1,2) + ' кг', correct: false },
+      { text: '1&thinsp;' + fr(1,2) + ' кг', correct: true },
+      { text: '2 кг', correct: false },
+      { text: fr(2,3) + ' кг', correct: false }
+    ]
+  },
+  { q: 'Почему смешанные числа удобны в жизни?',
+    opts: [
+      { text: 'Меньше места на бумаге', correct: false },
+      { text: 'Сразу показывают порядок величины', correct: true },
+      { text: 'С ними удобнее умножать', correct: false },
+      { text: 'Они всегда больше единицы', correct: false }
+    ]
+  },
+  { q: 'Как в некоторых странах записывают смешанные числа?',
+    opts: [
+      { text: 'С точкой вместо дробной черты', correct: false },
+      { text: 'Со знаком плюс между целой и дробной частью', correct: true },
+      { text: 'Только в виде неправильной дроби', correct: false },
+      { text: 'Целую часть пишут снизу', correct: false }
+    ]
+  }
+];
+
+function initReadQuiz() {
+  var container = document.getElementById('readQs');
+  container.innerHTML = '';
+  var i;
+  for (i = 0; i < READ_QS.length; i++) {
+    (function(q) {
+      var block = document.createElement('div');
+      var qDiv = document.createElement('div');
+      qDiv.className = 'read-q-t';
+      qDiv.innerHTML = q.q;
+      block.appendChild(qDiv);
+      var optsDiv = document.createElement('div');
+      optsDiv.className = 'read-opts';
+      var shuffled = shuffleArr(q.opts);
+      var k;
+      for (k = 0; k < shuffled.length; k++) {
+        (function(opt) {
+          var btn = document.createElement('button');
+          btn.className = 'read-opt';
+          btn.innerHTML = opt.text;
+          btn.setAttribute('data-correct', opt.correct ? 'true' : 'false');
+          btn.onclick = function() {
+            var btns = optsDiv.querySelectorAll('.read-opt');
+            var m;
+            for (m = 0; m < btns.length; m++) { btns[m].style.pointerEvents = 'none'; }
+            if (opt.correct) {
+              btn.classList.add('correct');
+            } else {
+              btn.classList.add('wrong');
+              for (m = 0; m < btns.length; m++) {
+                if (btns[m].getAttribute('data-correct') === 'true') {
+                  btns[m].classList.add('correct');
+                }
+              }
+            }
+          };
+          optsDiv.appendChild(btn);
+        })(shuffled[k]);
+      }
+      block.appendChild(optsDiv);
+      container.appendChild(block);
+    })(READ_QS[i]);
+  }
+}
+
+/* ── Misconceptions ── */
+var MISCONCEPTIONS = [
+  {
+    imgDesc: 'Школьник пишет "2 x 3/4" вместо "2&thinsp;3/4". Учитель показывает знак плюс.',
+    label: '«2&thinsp;' + fr(3,4) + '» — это 2 умножить на ' + fr(3,4) + '?',
+    wrong: '«2 и ' + fr(3,4) + ' — это 2, умноженное на ' + fr(3,4) + '»',
+    whyWrong: 'В математике числа рядом с буквой обычно означают умножение (2a = 2 × a). Но для смешанных чисел это не так.',
+    correct: 'В смешанном числе 2&thinsp;' + fr(3,4) + ' двойка — это целая часть, а ' + fr(3,4) + ' — дробная. Между ними знак плюс, просто он не пишется: 2&thinsp;' + fr(3,4) + ' = 2 + ' + fr(3,4) + ' = ' + fr(11,4) + '. Умножения нет.',
+    hint: 'Смешанное число — это 2 ПЛЮС ' + fr(3,4) + ', а не 2 умноженное на ' + fr(3,4) + '.'
+  },
+  {
+    imgDesc: 'Школьник смотрит на дробь 11/4 и пишет: 11 − 4 = 7. Рядом учитель показывает деление с остатком: 11 ÷ 4 = 2 (ост. 3).',
+    label: 'Чтобы перевести ' + fr(11,4) + ', вычти знаменатель?',
+    wrong: '«Чтобы перевести ' + fr(11,4) + ', надо отнять: 11 - 4 = 7, получается 1 и ' + fr(7,4) + '»',
+    whyWrong: 'Ребёнок видит два числа и пытается их вычесть — это самая знакомая ему операция.',
+    correct: 'Чтобы найти смешанное число, нужно числитель делить на знаменатель с остатком. Например, для ' + fr(11,4) + ' выполняем 11 : 4 = 2 (остаток 3). Целая часть — частное (2), дробная — остаток над знаменателем: 2&thinsp;' + fr(3,4) + '.',
+    hint: 'Делим числитель на знаменатель. Частное — впереди, остаток — в числителе дроби.'
+  }
+];
+
+var miscActive = -1;
+
+function initMisc() {
+  var grid = document.getElementById('miscGrid');
+  grid.innerHTML = '';
+  var i;
+  for (i = 0; i < MISCONCEPTIONS.length; i++) {
+    (function(m, idx) {
+      var card = document.createElement('div');
+      card.className = 'misc-card';
+      var imgSrcs = ['node3_img4.png', 'node3_img5.png'];
+      var imgHtml = '<img src="' + imgSrcs[idx] + '" alt="' + m.imgDesc + '" style="width:100%;aspect-ratio:3/2;object-fit:cover;display:block;">';
+      card.innerHTML = imgHtml + '<div class="misc-card-label">' + m.label + '</div>';
+      card.onclick = function() { miscTap(idx); };
+      grid.appendChild(card);
+    })(MISCONCEPTIONS[i], i);
+  }
+}
+
+function miscTap(idx) {
+  var grid  = document.getElementById('miscGrid');
+  var panel = document.getElementById('miscPanel');
+  var cards = grid.querySelectorAll('.misc-card');
+  var m = MISCONCEPTIONS[idx];
+  var i;
+
+  if (miscActive === idx) {
+    miscActive = -1;
+    for (i = 0; i < cards.length; i++) { cards[i].className = 'misc-card'; }
+    panel.className = 'misc-panel';
+    panel.innerHTML = '';
+    return;
+  }
+
+  miscActive = idx;
+  for (i = 0; i < cards.length; i++) { cards[i].className = 'misc-card'; }
+  cards[idx].className = 'misc-card active';
+
+  panel.className = 'misc-panel open';
+  var iconSVG = '<svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">'
+    + '<circle cx="11" cy="11" r="11" fill="#EF4444"/>'
+    + '<line x1="7" y1="7" x2="15" y2="15" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
+    + '<line x1="15" y1="7" x2="7" y2="15" stroke="white" stroke-width="2.2" stroke-linecap="round"/>'
+    + '</svg>';
+  panel.innerHTML = '<div class="misc-panel-head">'
+    + '<div class="misc-panel-head-icon">' + iconSVG + '</div>'
+    + '<div class="misc-wrong">' + m.wrong + '</div></div>'
+    + '<div class="misc-body">'
+    + '<div class="misc-why">' + m.whyWrong + '</div>'
+    + '<div class="misc-correct">' + m.correct + '</div>'
+    + '<div class="misc-hint">&#9989; ' + m.hint + '</div>'
+    + '</div>';
+}
+
+/* ── Запомни ── */
+var REMEMBER = [
+  'Смешанное число = целая часть + правильная дробь',
+  '2&thinsp;' + fr(3,4) + ' означает 2 + ' + fr(3,4) + ', а не 2 &times; ' + fr(3,4),
+  'Перевод в смешанное: числитель / знаменатель с остатком',
+  'Перевод обратно: целая x знаменатель + числитель дробной части',
+  'Оба вида — смешанное и неправильная дробь — равноправны'
+];
+
+function initRemember() {
+  var list = document.getElementById('rememberList');
+  list.innerHTML = '';
+  var i;
+  for (i = 0; i < REMEMBER.length; i++) {
+    var item = document.createElement('div');
+    item.className = 'remember-item';
+    item.innerHTML = '<div class="remember-dot"></div><div class="remember-text">' + REMEMBER[i] + '</div>';
+    list.appendChild(item);
+  }
+}
+
+/* ── Проверь себя ── */
+var SELFCHECK = [
+  'Как перевести ' + fr(13,5) + ' в смешанное число?',
+  'Как перевести 3&thinsp;' + fr(2,5) + ' в неправильную дробь?',
+  'Между какими целыми числами находится дробь ' + fr(11,4) + '?',
+  'Что означает «полтора» как дробь?'
+];
+
+function initSelfcheck() {
+  var list = document.getElementById('selfcheckList');
+  list.innerHTML = '';
+  var i;
+  for (i = 0; i < SELFCHECK.length; i++) {
+    var item = document.createElement('div');
+    item.className = 'selfcheck-item';
+    item.innerHTML = '<span class="selfcheck-num">' + (i + 1) + '.</span>' + SELFCHECK[i];
+    list.appendChild(item);
+  }
+}
+
+/* ── Финальный квиз ── */
+var QUIZ_QS = [
+  { q: 'Переведи дробь ' + fr(7,3) + ' в смешанное число.',
+    opts: ['2&thinsp;' + fr(1,3), '1&thinsp;' + fr(4,3), '3&thinsp;' + fr(1,7), '2&thinsp;' + fr(2,3)], c: 0,
+    explain: '7 : 3 = 2 (остаток 1), значит ' + fr(7,3) + ' = 2&thinsp;' + fr(1,3) + '.' },
+  { q: 'Переведи смешанное число 3&thinsp;' + fr(2,5) + ' в неправильную дробь.',
+    opts: [fr(5,5), fr(17,5), fr(32,5), fr(15,2)], c: 1,
+    explain: '3 &times; 5 + 2 = 17, знаменатель 5, ответ ' + fr(17,5) + '.' },
+  { q: 'Какое смешанное число соответствует дроби ' + fr(9,4) + '?',
+    opts: ['4&thinsp;' + fr(1,9), '2&thinsp;' + fr(1,4), '1&thinsp;' + fr(5,4), '2&thinsp;' + fr(3,4)], c: 1,
+    explain: '9 : 4 = 2 (остаток 1), значит ' + fr(9,4) + ' = 2&thinsp;' + fr(1,4) + '.' },
+  { q: 'Целая часть смешанного числа ' + fr(11,3) + ' равна...',
+    opts: ['2', '3', '4', '11'], c: 1,
+    explain: '11 : 3 = 3 (остаток 2), целая часть — частное, то есть 3.' },
+  { q: 'Вася съел 1&thinsp;' + fr(3,8) + ' пиццы. Сколько это в неправильной дроби?',
+    opts: [fr(13,8), fr(4,8), fr(11,8), fr(3,8)], c: 2,
+    explain: '1 &times; 8 + 3 = 11, знаменатель 8, ответ ' + fr(11,8) + '.' }
+];
+
+var qIdx      = 0;
+var qScore    = 0;
+var qAnswered = false;
+var qResults  = [];
+
+function initQuiz() {
+  qIdx      = 0;
+  qScore    = 0;
+  qResults  = [];
+  renderQuizProg();
+  renderQuizQ();
+}
+
+function renderQuizProg() {
+  var prog = document.getElementById('qProg');
+  prog.innerHTML = '';
+  var i;
+  for (i = 0; i < QUIZ_QS.length; i++) {
+    var dot = document.createElement('div');
+    if (i < qIdx) {
+      dot.className = 'quiz-dot ' + (qResults[i] ? 'correct' : 'wrong');
+    } else if (i === qIdx) {
+      dot.className = 'quiz-dot current';
+    } else {
+      dot.className = 'quiz-dot';
+    }
+    prog.appendChild(dot);
+  }
+}
+
+function renderQuizQ() {
+  if (qIdx >= QUIZ_QS.length) { showFinish(); return; }
+  qAnswered = false;
+  var q    = QUIZ_QS[qIdx];
+  var card = document.getElementById('qCard');
+  var shuffled = shuffleArr(q.opts.map(function(o, i) { return { text: o, correct: i === q.c }; }));
+  var optsHtml = '';
+  var i;
+  for (i = 0; i < shuffled.length; i++) {
+    optsHtml += '<button class="quiz-opt" data-correct="' + (shuffled[i].correct ? 'true' : 'false') + '" onclick="quizTap(this,' + qIdx + ')">' + shuffled[i].text + '</button>';
+  }
+  card.innerHTML = '<div class="quiz-qw"><div class="quiz-cnt">Вопрос ' + (qIdx + 1) + ' из ' + QUIZ_QS.length + '</div><div class="quiz-qt">' + q.q + '</div></div>'
+    + '<div class="quiz-opts">' + optsHtml + '</div>'
+    + '<div class="quiz-explain" id="qExpl"></div>'
+    + '<button class="quiz-next" id="qNext" onclick="quizNext()" style="display:none">' + (qIdx + 1 < QUIZ_QS.length ? 'Следующий вопрос →' : 'Завершить →') + '</button>';
+  renderQuizProg();
+}
+
+function quizTap(btn, qi) {
+  if (qAnswered) return;
+  qAnswered = true;
+  var correct = btn.getAttribute('data-correct') === 'true';
+  var card = document.getElementById('qCard');
+  var btns = card.querySelectorAll('.quiz-opt');
+  var k;
+  for (k = 0; k < btns.length; k++) { btns[k].style.pointerEvents = 'none'; }
+  if (correct) {
+    btn.classList.add('correct');
+    qScore++;
+  } else {
+    btn.classList.add('wrong');
+    for (k = 0; k < btns.length; k++) {
+      if (btns[k].getAttribute('data-correct') === 'true') { btns[k].classList.add('correct'); }
+    }
+  }
+  qResults[qi] = correct;
+  var dot = document.getElementById('qProg').children[qi];
+  if (dot) { dot.className = 'quiz-dot ' + (correct ? 'correct' : 'wrong'); }
+  var expl = document.getElementById('qExpl');
+  expl.className = 'quiz-explain show ' + (correct ? 'ok' : 'err');
+  expl.innerHTML = QUIZ_QS[qi].explain;
+  var nextBtn = document.getElementById('qNext');
+  if (nextBtn) { nextBtn.style.display = 'block'; }
+}
+
+function quizNext() {
+  qIdx++;
+  renderQuizProg();
+  renderQuizQ();
+}
+
+function showFinish() {
+  if (checkAnswered) { try { Progress.markDone('node3'); } catch(e) {} }
+  document.getElementById('finScore').innerHTML = qScore + ' из ' + QUIZ_QS.length;
+  var ov = document.getElementById('finOv');
+  ov.className = 'finish-ov show';
+}
+
+function finStay() {
+  document.getElementById('finOv').className = 'finish-ov';
+}
+
+/* ── DYK ── */
+var DYK = [
+  {
+    tag: 'Язык',
+    title: '«Полтора» — смешанное число в одном слове',
+    teaser: 'Русский язык спрятал математику прямо в слове.',
+    text: '<p>«Полтора» — одно из немногих русских слов, которое само по себе означает смешанное число: 1 целый и ещё половина, то есть 1 + ' + fr(1,2) + ' = ' + fr(3,2) + '. Похожие слова есть и в других языках: английское «one and a half», немецкое «anderthalb» — все они описывают одно и то же.</p>'
+       + '<p>Смешанное число существовало в языке ещё до того, как появилась математическая запись. Люди считали «полтора» задолго до того, как узнали что это ' + fr(3,2) + '.</p>'
+  },
+  {
+    tag: 'Время',
+    title: 'Время на часах — это смешанные числа',
+    teaser: 'Два часа сорок пять минут — посмотри на это как математик.',
+    text: '<p>Время мы привыкли измерять смешанными числами. «Два часа сорок пять минут» — это 2&thinsp;' + fr(45,60) + ' часа, или 2&thinsp;' + fr(3,4) + ' часа. Спортсмен пробежал за «три минуты двадцать секунд» — это 3&thinsp;' + fr(1,3) + ' минуты.</p>'
+       + '<p>Смешанные числа буквально у нас на часах — каждый раз когда ты говоришь время, ты используешь этот формат записи.</p>'
+  }
+];
+
+var dykActive = -1;
+var checkAnswered = false;
+
+function initDYK() {
+  var grid = document.getElementById('dykGrid');
+  grid.innerHTML = '';
+  var i;
+  for (i = 0; i < DYK.length; i++) {
+    (function(d, idx) {
+      var card = document.createElement('div');
+      card.className = 'dyk-card';
+      card.innerHTML = '<div class="dyk-card-body"><div class="dyk-tag">' + d.tag + '</div><div class="dyk-title">' + d.title + '</div></div>';
+      card.onclick = function() { dykTap(idx); };
+      grid.appendChild(card);
+    })(DYK[i], i);
+  }
+}
+
+function dykTap(idx) {
+  var grid  = document.getElementById('dykGrid');
+  var panel = document.getElementById('dykPanel');
+  var cards = grid.querySelectorAll('.dyk-card');
+  var d = DYK[idx];
+  var i;
+
+  if (dykActive === idx) {
+    dykActive = -1;
+    for (i = 0; i < cards.length; i++) { cards[i].className = 'dyk-card'; }
+    panel.className = 'dyk-panel';
+    panel.innerHTML = '';
+    return;
+  }
+
+  dykActive = idx;
+  for (i = 0; i < cards.length; i++) { cards[i].className = 'dyk-card'; }
+  cards[idx].className = 'dyk-card active';
+
+  panel.className = 'dyk-panel open';
+  panel.innerHTML = '<div class="dyk-panel-head"><div class="dyk-panel-tag">' + d.tag + '</div><div class="dyk-panel-title">' + d.title + '</div></div>'
+    + '<div class="dyk-panel-body"><p class="dyk-panel-teaser">' + d.teaser + '</p>' + d.text + '</div>';
+}
+
+/* ── Инициализация ── */
+updateSim(5);
+initPreCheck();
+initCheck();
+initGlossary();
+initMatch();
+initReadQuiz();
+initMisc();
+initRemember();
+
+window.onresize = function() {
+  var val = parseInt(document.getElementById('simSlider').value, 10);
+  buildPizzas(val);
+};
+initSelfcheck();
+initQuiz();
+initDYK();
+
+</script>
+</body>
+</html>
